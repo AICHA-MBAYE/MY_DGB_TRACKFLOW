@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use App\Http\Controllers\DemandeAbsenceController;
+
+Route::get('/absence/create', [DemandeAbsenceController::class, 'create'])->name('absence.create');
+Route::post('/absence', [DemandeAbsenceController::class, 'store'])->name('absence.store');
+
 
 Route::get('/', function () {
     return view('welcome');
