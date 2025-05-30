@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateTypesAbsencesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('types_absences', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique(); // nom du type d'absence, unique pour éviter doublons
+            $table->text('description')->nullable(); // description optionnelle
+            $table->timestamps(); // created_at et updated_at
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('types_absences');
+    }
+}
