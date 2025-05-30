@@ -1,22 +1,26 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AgentController;  // Ajout de l'import du contrôleur AgentController
 use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt;
+
+Route::get('/agent/list', [AgentController::class, 'index'])->name('agent.list');
 
 Route::get('/', function () {
     return view('welcome');
-})->name('home');
+});
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['auth'])->group(function () {
-    Route::redirect('settings', 'settings/profile');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
-    Volt::route('settings/password', 'settings.password')->name('settings.password');
-    Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+    // Ajout des routes resource pour Agent
+    Route::resource('agent', AgentController::class);
 });
 
 require __DIR__.'/auth.php';
