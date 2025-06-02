@@ -19,8 +19,7 @@
                     type="text"
                     required
                     value="{{ old('prenom') }}"
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('prenom') border-red-600 @enderror"
-                >
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('prenom') border-red-600 @enderror" style="color: black;"                >
                 @error('prenom')
                     <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
                 @enderror
@@ -35,7 +34,7 @@
                     type="text"
                     required
                     value="{{ old('nom') }}"
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('nom') border-red-600 @enderror"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('nom') border-red-600 @enderror"style="color: black;"
                 >
                 @error('nom')
                     <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
@@ -51,7 +50,7 @@
                     type="email"
                     required
                     value="{{ old('email') }}"
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('email') border-red-600 @enderror"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('email') border-red-600 @enderror"style="color: black;"
                 >
                 @error('email')
                     <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>

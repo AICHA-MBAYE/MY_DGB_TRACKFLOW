@@ -1,35 +1,35 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AgentController;  // Ajout de l'import du contrôleur AgentController
-use Illuminate\Support\Facades\Route;
-<<<<<<< HEAD
-
-Route::get('/agent/list', [AgentController::class, 'index'])->name('agent.list');
-=======
-use Livewire\Volt\Volt;
+use App\Http\Controllers\AgentController;
 use App\Http\Controllers\DemandeAbsenceController;
+use Illuminate\Support\Facades\Route;
+use Livewire\Volt\Volt;
 
-Route::get('/absence/create', [DemandeAbsenceController::class, 'create'])->name('absence.create');
-Route::post('/absence', [DemandeAbsenceController::class, 'store'])->name('absence.store');
-
->>>>>>> ec613682e7ffedec615ae68f20038536cd59a636
-
+// Routes publiques
 Route::get('/', function () {
     return view('welcome');
 });
 
+// Dashboard (auth + verified)
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Routes protégées par auth
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Ajout des routes resource pour Agent
+    // Routes pour l'agent
     Route::resource('agent', AgentController::class);
-});
+}); // <-- fermeture correcte du group
 
+// Autres routes spécifiques
+Route::get('/agent/list', [AgentController::class, 'index'])->name('agent.list');
+Route::get('/absence/create', [DemandeAbsenceController::class, 'create'])->name('absence.create');
+Route::post('/absence', [DemandeAbsenceController::class, 'store'])->name('absence.store');
+
+// Auth routes
 require __DIR__.'/auth.php';

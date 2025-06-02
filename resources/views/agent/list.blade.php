@@ -20,10 +20,10 @@
             <tbody>
                 @forelse ($agents as $agent)
                     <tr class="hover:bg-gray-100">
-                        <td class="px-4 py-2 border">{{ $agent->id }}</td>
-                        <td class="px-4 py-2 border">{{ $agent->prenom }}</td>
-                        <td class="px-4 py-2 border">{{ $agent->nom }}</td>
-                        <td class="px-4 py-2 border">{{ $agent->email }}</td>
+                        <td class="px-4 py-2 border" style="color: black;">{{ $agent->id }}</td>
+                        <td class="px-4 py-2 border" style="color: black;">{{ $agent->prenom }}</td>
+                        <td class="px-4 py-2 border" style="color: black;">{{ $agent->nom }}</td>
+                        <td class="px-4 py-2 border" style="color: black;">{{ $agent->email }}</td>
                         <td class="px-4 py-2 border">
                             <div class="flex flex-wrap gap-2">
                                 <a href="{{ route('agent.edit', $agent) }}" class="btn btn-primary">
