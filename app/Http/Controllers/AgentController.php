@@ -40,12 +40,19 @@ class AgentController extends Controller
         $this->validate($request,[
                     'prenom'=>'required',
                     'nom'=>'required',
-                    'email' => 'required|email|unique:agents,email'
+                    'email' => 'required|email|unique:agents,email',
+                    'role' => 'required|in:super_admin,admin_sectoriel,directeur,chef_service,agent'
+
 
 ]);
 
         //création de l'objet
-        Agent::create($request->all());
+        Agent::create([
+            'prenom' => $request->prenom,
+            'nom' => $request->nom,
+            'email' => $request->email,
+            'role' => $request->role,
+        ]);
         //redirection vers la liste des agents
         return redirect()->route('agent.index');
     }
@@ -72,15 +79,21 @@ class AgentController extends Controller
     public function update(Request $request, Agent $agent)
     {
         // verification de la validité des champs
-        $this->validate($request,[
-            'prenom'=>'required',
-            'nom'=>'required',
-            'email' => ['required', 'email', Rule::unique('agents')->ignore($agent->id)],
-        ]);
+         $this->validate($request, [
+        'prenom' => 'required',
+        'nom' => 'required',
+        'email' => ['required', 'email', Rule::unique('agents')->ignore($agent->id)],
+        'role' => ['required', Rule::in(['super_admin', 'admin_sectoriel', 'directeur', 'chef_service', 'agent'])],
+    ]);
         // création de l'objet
-        $agent->update($request->all());
+        $agent->update([
+            'prenom' => $request->prenom,
+            'nom' => $request->nom,
+            'email' => $request->email,
+            'role' => $request->role,
+        ]);
         //redirection vers la liste des agents
-       return redirect()->route('agent.index');
+        return redirect()->route('agent.index');
     }
 
     /**

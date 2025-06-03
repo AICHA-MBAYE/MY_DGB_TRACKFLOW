@@ -6,8 +6,7 @@
 <div class="container">
 <div class="row">
 <div class="col-12">
-<a class="btn btn-secondary mb-2" href="{{route('agent.
-index')}}" role="button">
+<a class="btn btn-secondary mb-2" href="{{route('agent.index')}}" role="button">
 <i class="fa fa-reply" aria-hidden="true"></i>
 </a>
 <a class="btn btn-warning mb-2" href="{{route('agent.edit',
@@ -27,6 +26,10 @@ compact('agent'))}}" role="button">
 <tr>
 <th>Email</th>
 <td>{{$agent->email}}</td>
+</tr>
+<tr>
+    <th>Rôle</th>
+    <td>{{ ucfirst(str_replace('_', ' ', $agent->role)) }}</td>
 </tr>
 </tbody>
 </table>

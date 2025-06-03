@@ -7,22 +7,11 @@ use Illuminate\Notifications\Notifiable;
 
 class Agent extends Authenticatable
 {
-    use Notifiable;
-
-    protected $fillable = [
-        'prenom',
-        'nom',
-        'email',
-    ];
-
-    // Cache la colonne password même si elle n'existe pas
-    protected $hidden = [
-        'remember_token',
-    ];
-
-    // Désactive le mot de passe
-    public function getAuthPassword()
-    {
-        return null;
-    }
+    use HasFactory;
+// définition des attributs que l'utilisateur a le droit de renseigner dans la BD
+protected $fillable = [
+'prenom',
+'nom',
+'email',
+];
 }
