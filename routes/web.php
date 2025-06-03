@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
 }); // <-- fermeture correcte du group
 
 // Autres routes spécifiques
-Route::get('/agent/list', [AgentController::class, 'index'])->name('agent.list');
+
 Route::get('/absence/create', [DemandeAbsenceController::class, 'create'])->name('absence.create');
 Route::post('/absence', [DemandeAbsenceController::class, 'store'])->name('absence.store');
 

@@ -1,8 +1,15 @@
 @extends('layouts.app')
 
-@section('title','Liste des agents')
-@section('titreContenu','Agents')
-@section('sousTitreContenu','Liste des agents')
+@section('title', 'Liste des agents')
+
+@section('titreContenu')
+    <span style="color: black;">Agents</span>
+@endsection
+
+@section('sousTitreContenu')
+    <span style="color: black;">Liste des agents</span>
+@endsection
+
 
 @section('contenu')
 <div class="bg-white p-6 rounded shadow-md max-w-7xl mx-auto">
@@ -14,6 +21,7 @@
                     <th class="px-4 py-2 border">Prénom</th>
                     <th class="px-4 py-2 border">Nom</th>
                     <th class="px-4 py-2 border">Email</th>
+                    <th class="px-4 py-2 border">Rôle</th>
                     <th class="px-4 py-2 border w-1/5">Actions</th>
                 </tr>
             </thead>
@@ -24,6 +32,7 @@
                         <td class="px-4 py-2 border" style="color: black;">{{ $agent->prenom }}</td>
                         <td class="px-4 py-2 border" style="color: black;">{{ $agent->nom }}</td>
                         <td class="px-4 py-2 border" style="color: black;">{{ $agent->email }}</td>
+                        <td class="px-4 py-2 border" style="color: black;">{{ ucfirst(str_replace('_', ' ', $agent->role)) }}</td>
                         <td class="px-4 py-2 border">
                             <div class="flex flex-wrap gap-2">
                                 <a href="{{ route('agent.edit', $agent) }}" class="btn btn-primary">

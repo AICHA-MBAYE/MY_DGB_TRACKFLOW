@@ -1,8 +1,15 @@
 @extends('layouts.app')
 
 @section('title', 'Ajouter un agent')
-@section('titreContenu', 'Ajouter un agent')
-@section('sousTitreContenu', 'Remplissez les informations ci-dessous')
+
+@section('titreContenu')
+    <span style="color: black;">Ajouter un agent</span>
+@endsection
+
+@section('sousTitreContenu')
+    <span style="color: black;">Remplissez les informations ci-dessous</span>
+@endsection
+
 
 @section('contenu')
 <div class="bg-white p-6 rounded shadow-md max-w-3xl mx-auto">
@@ -56,6 +63,25 @@
                     <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
                 @enderror
             </div>
+             <!-- Rôle (liste déroulante) -->
+             <div class="md:col-span-2">
+                <label for="role" class="block text-gray-700 font-semibold mb-2">Rôle</label>
+                <select 
+                    id="role"
+                    name="role"
+                    required
+                    class="w-full border-gray-300 rounded px-3py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('role') border-red-600 @enderror" style="color: black;">
+                    <option value="">-- Sélectionnez un rôle --</option>
+                    <option value="super_admin" {{ old('role') == 'super_admin' ? 'selected' : '' }}>Super-administrateur</option>
+                    <option value="admin_sectoriel" {{ old('role') == 'admin_sectoriel' ? 'selected' : '' }}>Administrateur sectoriel</option>
+                    <option value="directeur" {{ old('role') == 'directeur' ? 'selected' : '' }}>Directeur</option>
+                    <option value="chef_service" {{ old('role') == 'chef_service' ? 'selected' : '' }}>Chef de service</option>
+                    <option value="agent" {{ old('role') == 'agent' ? 'selected' : '' }}>Agent</option>
+                </select>
+                @error('role')
+                    <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
+                @enderror
+             </div>
         </div>
 
         <div class="mt-6 text-right">

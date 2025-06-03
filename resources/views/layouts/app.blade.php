@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
+
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8" />
@@ -171,7 +171,7 @@
         <footer>
             DGB-SENEGAL 2025 - Tous droits réservés
         </footer>
-=======
+
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -214,13 +214,7 @@
     </style>
 </head>
 <body>
-    <div class="logo-container">
-        <img src="{{ asset('images/dgb.png') }}" alt="Logo DGB">
-    </div>
-
-    <div class="container content-wrapper">
-        @yield('content')
->>>>>>> ec613682e7ffedec615ae68f20038536cd59a636
-    </div>
+   
+   
 </body>
 </html>

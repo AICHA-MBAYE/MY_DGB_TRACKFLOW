@@ -12,5 +12,6 @@ protected $fillable = [
 'prenom',
 'nom',
 'email',
+'role',
 ];
 }

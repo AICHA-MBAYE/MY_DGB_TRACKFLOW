@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTypesAbsencesTable extends Migration
+class CreateTypeAbsencesTable extends Migration
 {
     /**
      * Run the migrations.

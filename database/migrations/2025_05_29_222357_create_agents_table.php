@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('prenom')->require();
             $table->string('nom')->require();
             $table->string('email')->require()->unique();
+            $table->string('role');
         });
     }
 
