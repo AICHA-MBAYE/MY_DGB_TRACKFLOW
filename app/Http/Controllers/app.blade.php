@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        @yield('content')
+        @yield('contenu')
     </div>
 </body>
 </html>

@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class DemandeAbsence extends Model
 {
     protected $fillable = [
-        'user_id',
-        'type_absence_id',
+        //'user_id',
+        //'type_absence_id',
         'date_debut',
         'date_fin',
         'motif',

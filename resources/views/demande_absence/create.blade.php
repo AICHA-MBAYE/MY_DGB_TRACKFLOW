@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('content')
+@section('contenu')
     <h2 class="mb-4 text-center" style="color: #2ecc71;"> Faire une demande d'absence</h2>
 
-    <form action="{{ route('absence.store') }}" method="POST">
+    <form action="{{ route('demande_absence.store') }}" method="POST">
         @csrf
 
         <div class="mb-3">

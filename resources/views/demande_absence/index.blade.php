@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('content')
+@section('contenu')
     <h2 class="mb-4 text-center" style="color: #2ecc71;">Mes demandes d'absence</h2>
 
     @if (session('success'))
@@ -30,11 +30,11 @@
                             <td>{{ \Carbon\Carbon::parse($demande->date_debut)->format('d/m/Y') }}</td>
                             <td>{{ \Carbon\Carbon::parse($demande->date_fin)->format('d/m/Y') }}</td>
                             <td>{{ $demande->motif }}</td>
-                            <td style="color: 
-                                @if ($demande->statut === 'en attente') #f39c12 
-                                @elseif ($demande->statut === 'acceptée') #2ecc71 
-                                @elseif ($demande->statut === 'refusée') #e74c3c 
-                                @else #fff 
+                            <td style="color:
+                                @if ($demande->statut === 'en attente') #f39c12
+                                @elseif ($demande->statut === 'acceptée') #2ecc71
+                                @elseif ($demande->statut === 'refusée') #e74c3c
+                                @else #fff
                                 @endif;">
                                 {{ ucfirst($demande->statut) }}
                             </td>

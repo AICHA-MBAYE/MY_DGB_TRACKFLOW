@@ -11,8 +11,7 @@ class DemandeAbsenceController extends Controller
 {
     public function create()
 {
-    $demandes = DemandeAbsence::whereNull('user_id')->latest()->get();
-
+    $demandes = DemandeAbsence::orderBy('created_at', 'desc')->get();
     return view('demande_absence.create', compact('demandes'));
 }
 
@@ -28,6 +27,7 @@ public function update(Request $request, $id)
         'date_debut' => 'required|date',
         'date_fin' => 'required|date|after_or_equal:date_debut',
         'motif' => 'required|string|max:500',
+        'justificatif' => 'sometimes|nullable|mimes:pdf|max:2048',
     ]);
 
     $demande = DemandeAbsence::findOrFail($id);

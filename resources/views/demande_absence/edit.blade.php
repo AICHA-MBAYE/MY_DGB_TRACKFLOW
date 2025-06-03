@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('content')
+@section('contenu')
 <div class="container">
     <h2 class="mb-4">Modifier la demande d'absence</h2>
 
