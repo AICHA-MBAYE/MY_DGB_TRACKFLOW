@@ -11,15 +11,17 @@ class DemandeAbsence extends Model
         'type_absence_id',
         'date_debut',
         'date_fin',
-        'description',
+        'motif',
         'statut',
         'justificatif',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    // Dans App\Models\DemandeAbsence.php (ou équivalent)
+public function agent()
+{
+    return $this->belongsTo(Agent::class, 'user_id');
+}
+
 
     public function typeAbsence()
     {

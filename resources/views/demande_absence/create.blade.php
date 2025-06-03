@@ -16,18 +16,7 @@
             <input type="date" name="date_fin" class="form-control" required>
         </div>
 
-        <div class="mb-3">
-    <label for="type_absence_id" class="form-label">Type d'absence</label>
-    <select name="type_absence_id" class="form-control" required>
-        <option value="">-- Choisir --</option>
-        @foreach($types as $type)
-            <option value="{{ $type->id }}">{{ $type->libelle }}</option>
-        @endforeach
-    </select>
-    @error('type_absence_id')
-        <div class="text-danger">{{ $message }}</div>
-    @enderror
-</div>
+
 
         <div class="form-group">
     <label for="justificatif">Justificatif (PDF max 2Mo, optionnel)</label>

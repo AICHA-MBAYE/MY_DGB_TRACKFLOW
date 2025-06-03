@@ -2,30 +2,68 @@
 
 namespace App\Http\Controllers;
 
-
-
 use App\Models\DemandeAbsence;
-use App\Models\TypeAbsence;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class DemandeAbsenceController extends Controller
 {
     public function create()
-    {
-        $types = TypeAbsence::all();
-        return view('demande_absence.create', compact('types'));
-    }
+{
+    $demandes = DemandeAbsence::whereNull('user_id')->latest()->get();
+
+    return view('demande_absence.create', compact('demandes'));
+}
+
+    public function edit($id)
+{
+    $demande = DemandeAbsence::findOrFail($id);
+    return view('demande_absence.edit', compact('demande'));
+}
+
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'date_debut' => 'required|date',
+        'date_fin' => 'required|date|after_or_equal:date_debut',
+        'motif' => 'required|string|max:500',
+    ]);
+
+    $demande = DemandeAbsence::findOrFail($id);
+    $demande->update($request->only(['date_debut', 'date_fin', 'motif']));
+
+    return redirect()->route('demande_absence.index')->with('success', 'Demande mise à jour.');
+}
+
+public function destroy($id)
+{
+    $demande = DemandeAbsence::findOrFail($id);
+    $demande->delete();
+
+    return redirect()->route('demande_absence.index')->with('success', 'Demande supprimée.');
+}
+public function index()
+{
+    $demandes = DemandeAbsence::all(); // ou `where('user_id', ...)` si restriction
+    return view('demande_absence.index', compact('demandes'));
+}
 
     public function store(Request $request)
     {
         $request->validate([
             'date_debut' => 'required|date',
             'date_fin' => 'required|date|after_or_equal:date_debut',
-            'type_absence_id' => 'required|exists:type_absences,id',
-            'description' => 'nullable|string',
-            'justificatif' => 'nullable|mimes:pdf|max:2048',
+            'motif' => 'required|string|max:500',
+            'justificatif' => 'sometimes|nullable|mimes:pdf|max:2048',
         ]);
+
+        $aujourdHui = Carbon::today();
+        if (Carbon::parse($request->date_debut)->lt($aujourdHui)) {
+            return back()->withErrors([
+                'date_debut' => 'La date de début ne peut pas être antérieure à aujourd\'hui.',
+            ])->withInput();
+        }
 
         $filePath = null;
         if ($request->hasFile('justificatif')) {
@@ -34,14 +72,14 @@ class DemandeAbsenceController extends Controller
 
         DemandeAbsence::create([
             'user_id' => Auth::id(),
-            'type_absence_id' => $request->type_absence_id,
             'date_debut' => $request->date_debut,
             'date_fin' => $request->date_fin,
-            'description' => $request->description,
+            'motif' => $request->motif,
             'justificatif' => $filePath,
             'statut' => 'en attente',
         ]);
 
-        return redirect()->back()->with('success', 'Demande envoyée avec succès.');
+       return redirect()->route('demande_absence.index')->with('success', 'Demande envoyée avec succès.');
+
     }
 }
