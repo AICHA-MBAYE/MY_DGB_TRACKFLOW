@@ -11,10 +11,10 @@
     @endif
 
     @if ($demandes->isEmpty())
-        <p class="text-center text-white">Vous n'avez encore aucune demande d'absence.</p>
+        <p class="text-center text-black">Vous n'avez encore aucune demande d'absence.</p>
     @else
         <div class="table-responsive">
-            <table class="table table-striped table-bordered text-white" style="background-color: #123a3c; border-radius: 8px;">
+            <table class="table table-striped table-bordered text-black" style="background-color: #123a3c; border-radius: 8px;">
                 <thead>
                     <tr>
                         <th>Date de début</th>

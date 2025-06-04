@@ -180,7 +180,7 @@
     <style>
         body {
             background-color: white;
-            color: #ffffff;
+            color: #0d0c0c;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .logo-container {
@@ -214,7 +214,7 @@
     </style>
 </head>
 <body>
-   
-   
+
+
 </body>
 </html>
