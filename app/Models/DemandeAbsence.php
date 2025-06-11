@@ -14,6 +14,8 @@ class DemandeAbsence extends Model
         'motif',
         'statut',
         'justificatif',
+        'etat_chef',
+        'etat_directeur',
     ];
 
     // Dans App\Models\DemandeAbsence.php (ou équivalent)
@@ -23,9 +25,9 @@ public function agent()
 }
 
 
-    public function typeAbsence()
+   /* public function typeAbsence()
     {
         return $this->belongsTo(TypeAbsence::class);
-    }
+    }*/
 }
 

@@ -18,7 +18,6 @@ return new class extends Migration
         $table->date('date_debut');
         $table->date('date_fin');
         $table->text('motif');
-        $table->string('statut')->default('en attente');
         $table->string('justificatif')->nullable();
         $table->timestamps();
     });

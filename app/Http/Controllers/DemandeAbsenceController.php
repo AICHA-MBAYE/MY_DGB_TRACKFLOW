@@ -76,7 +76,8 @@ public function index()
             'date_fin' => $request->date_fin,
             'motif' => $request->motif,
             'justificatif' => $filePath,
-            'statut' => 'en attente',
+            'etat_chef' => 'en_attente',
+            'etat_directeur' => 'en_attente',
         ]);
 
        return redirect()->route('demande_absence.index')->with('success', 'Demande envoyée avec succès.');

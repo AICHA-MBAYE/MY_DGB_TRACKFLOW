@@ -20,7 +20,8 @@
                         <th>Date de début</th>
                         <th>Date de fin</th>
                         <th>Motif</th>
-                        <th>Statut</th>
+                        <th>statut_chef</th>
+                        <th>statut_directeur</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -31,12 +32,20 @@
                             <td>{{ \Carbon\Carbon::parse($demande->date_fin)->format('d/m/Y') }}</td>
                             <td>{{ $demande->motif }}</td>
                             <td style="color:
-                                @if ($demande->statut === 'en attente') #f39c12
-                                @elseif ($demande->statut === 'acceptée') #2ecc71
-                                @elseif ($demande->statut === 'refusée') #e74c3c
+                                @if ($demande->etat_chef === 'en attente') #f39c12
+                                @elseif ($demande->etat_chef === 'acceptée') #2ecc71
+                                @elseif ($demande->etat_chef === 'refusée') #e74c3c
                                 @else #fff
                                 @endif;">
-                                {{ ucfirst($demande->statut) }}
+                                {{ ucfirst($demande->etat_chef) }}
+                            </td>
+                            <td style="color:
+                                @if ($demande->etat_directeur === 'en attente') #f39c12
+                                @elseif ($demande->etat_directeur === 'acceptée') #2ecc71
+                                @elseif ($demande->etat_directeur === 'refusée') #e74c3c
+                                @else #fff
+                                @endif;">
+                                {{ ucfirst($demande->etat_directeur) }}
                             </td>
                             <td>
                                 <a href="{{ route('demande_absence.edit', $demande->id) }}" class="btn btn-sm btn-primary">Modifier</a>
