@@ -3,11 +3,11 @@
 @section('title', 'Liste des agents')
 
 @section('titreContenu')
-    <span style="color: black;">Agents</span>
+    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34,155);">Liste des agents</h1>
 @endsection
 
 @section('sousTitreContenu')
-    <span style="color: black;">Liste des agents</span>
+    <p class="text-center text-lg text-black">Voici la liste des agents</p>
 @endsection
 
 
@@ -22,6 +22,7 @@
                     <th class="px-4 py-2 border">Nom</th>
                     <th class="px-4 py-2 border">Email</th>
                     <th class="px-4 py-2 border">Rôle</th>
+                    <th class="px-4 py-2 border">Direction</th>
                     <th class="px-4 py-2 border w-1/5">Actions</th>
                 </tr>
             </thead>
@@ -33,6 +34,7 @@
                         <td class="px-4 py-2 border" style="color: black;">{{ $agent->nom }}</td>
                         <td class="px-4 py-2 border" style="color: black;">{{ $agent->email }}</td>
                         <td class="px-4 py-2 border" style="color: black;">{{ ucfirst(str_replace('_', ' ', $agent->role)) }}</td>
+                        <td class="px-4 py-2 border" style="color: black;">{{ ucfirst(str_replace('_', ' ', $agent->direction)) }}</td>
                         <td class="px-4 py-2 border">
                             <div class="flex flex-wrap gap-2">
                                 <a href="{{ route('agent.edit', $agent) }}" class="btn btn-primary">
@@ -52,7 +54,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center py-4 text-gray-500">Aucun agent trouvé.</td>
+                        <td colspan="7" class="text-center py-4 text-gray-500">Aucun agent trouvé.</td>
                     </tr>
                 @endforelse
             </tbody>

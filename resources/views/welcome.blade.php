@@ -3,11 +3,11 @@
 @section('title', 'Accueil')
 
 @section('titreContenu')
-    <span style="color: black;">Bienvenue</span>
+    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Bienvenue</h1>
 @endsection
 
 @section('sousTitreContenu')
-    <span style="color: black;">Système de gestion des agents - MY_DGB_TRACKFLOW</span>
+    <p class="text-center text-lg text-black">Système de gestion des agents - MY_DGB_TRACKFLOW</p>
 @endsection
 
 

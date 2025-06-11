@@ -3,11 +3,11 @@
 @section('title', 'Ajouter un agent')
 
 @section('titreContenu')
-    <span style="color: black;">Ajouter un agent</span>
+    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Ajouter un agent</h1>
 @endsection
 
 @section('sousTitreContenu')
-    <span style="color: black;">Remplissez les informations ci-dessous</span>
+    <p class="text-center text-lg text-black">Remplissez les informations ci-dessous</p>
 @endsection
 
 
@@ -82,6 +82,24 @@
                     <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
                 @enderror
              </div>
+             <div class="md:col-span-2">
+                <label for="direction" class="block text-gray-700 font-semibold mb-2">Direction</label>
+                <select
+                    id="direction"
+                    name="direction"
+                    required
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('direction') border-red-600 @enderror" style="color: black;">
+                    <option value="">-- Sélectionnez une direction --</option>
+                    <option value="DGCPT" {{ old('direction') == 'DGCPT' ? 'selected' : '' }}>Direction Générale de la Comptabilité Publique et du Trésor (DGCPT)</option>
+                    <option value="DGD" {{ old('direction') == 'DGD' ? 'selected' : '' }}>Direction Générale des Douanes (DGD)</option>
+                    <option value="DGID" {{ old('direction') == 'DGID' ? 'selected' : '' }}>Direction Générale des Impôts et des Domaines (DGID)</option>
+                    <option value="DGB" {{ old('direction') == 'DGB' ? 'selected' : '' }}>Direction Générale du Budget (DGB)</option>
+                    <option value="DGSF" {{ old('direction') == 'DGSF' ? 'selected' : '' }}>Direction Générale du Secteur Financier (DGSF)</option>
+                </select>
+                @error('direction')
+                    <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
+                @enderror
+            </div>
         </div>
 
         <div class="mt-6 text-right">

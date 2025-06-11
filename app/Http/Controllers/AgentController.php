@@ -41,7 +41,8 @@ class AgentController extends Controller
                     'prenom'=>'required',
                     'nom'=>'required',
                     'email' => 'required|email|unique:agents,email',
-                    'role' => 'required|in:super_admin,admin_sectoriel,directeur,chef_service,agent'
+                    'role' => 'required|in:super_admin,admin_sectoriel,directeur,chef_service,agent',
+                    'direction' => 'required|in:DGCPT,DGD,DGID,DGB,DGSF'
 
 
 ]);
@@ -52,6 +53,7 @@ class AgentController extends Controller
             'nom' => $request->nom,
             'email' => $request->email,
             'role' => $request->role,
+            'direction' => $request->direction,
         ]);
         //redirection vers la liste des agents
         return redirect()->route('agent.index');
@@ -84,6 +86,7 @@ class AgentController extends Controller
         'nom' => 'required',
         'email' => ['required', 'email', Rule::unique('agents')->ignore($agent->id)],
         'role' => ['required', Rule::in(['super_admin', 'admin_sectoriel', 'directeur', 'chef_service', 'agent'])],
+         'direction' => 'required|in:DGCPT,DGD,DGID,DGB,DGSF'
     ]);
         // création de l'objet
         $agent->update([
@@ -91,6 +94,7 @@ class AgentController extends Controller
             'nom' => $request->nom,
             'email' => $request->email,
             'role' => $request->role,
+            'direction' => $request->direction,
         ]);
         //redirection vers la liste des agents
         return redirect()->route('agent.index');
