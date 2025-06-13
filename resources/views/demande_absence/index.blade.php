@@ -32,7 +32,7 @@
                             <td>{{ \Carbon\Carbon::parse($demande->date_fin)->format('d/m/Y') }}</td>
                             <td>{{ $demande->motif }}</td>
                             <td style="color:
-                                @if ($demande->etat_chef === 'en attente') #f39c12
+                                @if ($demande->etat_chef === 'en_attente') #f39c12
                                 @elseif ($demande->etat_chef === 'acceptée') #2ecc71
                                 @elseif ($demande->etat_chef === 'refusée') #e74c3c
                                 @else #fff
@@ -40,7 +40,7 @@
                                 {{ ucfirst($demande->etat_chef) }}
                             </td>
                             <td style="color:
-                                @if ($demande->etat_directeur === 'en attente') #f39c12
+                                @if ($demande->etat_directeur === 'en_attente') #f39c12
                                 @elseif ($demande->etat_directeur === 'acceptée') #2ecc71
                                 @elseif ($demande->etat_directeur === 'refusée') #e74c3c
                                 @else #fff
