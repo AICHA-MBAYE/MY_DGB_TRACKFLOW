@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class ValidationDirecteurController extends Controller
 {
     public function index() {
-    $demandes =DemandeAbsence::where('etat_chef', 'valide')
+    $demandes =DemandeAbsence::where('etat_chef', 'acceptée')
                                ->where('etat_directeur', 'en_attente')->get();
     return view('directeur.validation', compact('demandes'));
 }

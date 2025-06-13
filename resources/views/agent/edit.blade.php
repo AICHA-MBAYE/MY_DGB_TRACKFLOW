@@ -66,11 +66,12 @@ text" name="email"
                     <label for="direction">Direction</label>
                     <select name="direction" id="direction" class="form-control @error('direction') is-invalid @enderror" required>
                         <option value="">-- Sélectionnez une direction --</option>
-                        <option value="DGCPT" {{ old('direction', $agent->direction) === 'DGCPT' ? 'selected' : '' }}>Direction Générale de la Comptabilité Publique et du Trésor (DGCPT)</option>
-                        <option value="DGD" {{ old('direction', $agent->direction) === 'DGD' ? 'selected' : '' }}>Direction Générale des Douanes (DGD)</option>
-                        <option value="DGID" {{ old('direction', $agent->direction) === 'DGID' ? 'selected' : '' }}>Direction Générale des Impôts et des Domaines (DGID)</option>
-                        <option value="DGB" {{ old('direction', $agent->direction) === 'DGB' ? 'selected' : '' }}>Direction Générale du Budget (DGB)</option>
-                        <option value="DGSF" {{ old('direction', $agent->direction) === 'DGSF' ? 'selected' : '' }}>Direction Générale du Secteur Financier (DGSF)</option>
+                        <option value="DAP" {{ old('direction') == 'DAP' ? 'selected' : '' }}>Direction de l'Administration et du Personnel (DAP)</option>
+                        <option value="DCI" {{ old('direction') == 'DCI' ? 'selected' : '' }}>Direction du Contrôle Interne (DCI)</option>
+                        <option value="DSI" {{ old('direction') == 'DSI' ? 'selected' : '' }}>Direction des Systèmes d'Information (DSI)</option>
+                        <option value="DPB" {{ old('direction') == 'DPB' ? 'selected' : '' }}>Direction de la Programmation Budgétaire (DPB)</option>
+                        <option value="CSS" {{ old('direction') == 'CSS' ? 'selected' : '' }}>Cellule de Suivi et de Synthèse(CSS)</option>
+                        <option value="CER" {{ old('direction') == 'CER' ? 'selected' : '' }}>Cellule des Etudes et de la Réglementation(CER)</option>
                     </select>
                     @error('direction')
                         <span class="text-danger">{{ $message }}</span>

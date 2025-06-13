@@ -1,8 +1,17 @@
 @extends('layouts.app')
 
+@section('title', 'Modification absence')
+
+@section('titreContenu')
+    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Modifier la demande d'absence</h1>
+@endsection
+
+@section('sousTitreContenu')
+    <p class="text-center text-lg text-black">Réctifiez les informations ci-dessous</p>
+@endsection
+
 @section('contenu')
 <div class="container">
-    <h2 class="mb-4">Modifier la demande d'absence</h2>
 
     @if ($errors->any())
         <div class="alert alert-danger">

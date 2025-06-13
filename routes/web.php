@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('agent', AgentController::class);
 // Autres routes spécifiques
 Route::get('/agent/list', [AgentController::class, 'index'])->name('agent.list');
+Route::get('/agents/create', [AgentController::class, 'create'])->name('agents.create');
+Route::get('/agents', [AgentController::class, 'index'])->name('agents.index');
 
 Route::get('/demande-absence/create', [DemandeAbsenceController::class, 'create'])->name('demande_absence.create');
     Route::post('/demande-absence', [DemandeAbsenceController::class, 'store'])->name('demande_absence.store');

@@ -3,13 +3,8 @@
 @section('title', 'Accueil')
 
 @section('titreContenu')
-    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Bienvenue</h1>
+    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Accueil</h1>
 @endsection
-
-@section('sousTitreContenu')
-    <p class="text-center text-lg text-black">Système de gestion des agents - MY_DGB_TRACKFLOW</p>
-@endsection
-
 
 @section('contenu')
     <div class="text-center py-10">

@@ -1,8 +1,17 @@
 @extends('layouts.app')
 
+@section('title', 'Validation absence')
+
+@section('titreContenu')
+    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Validation des demandes d'absence</h1>
+@endsection
+
+@section('sousTitreContenu')
+    <p class="text-center text-lg text-black">Chef de Service</p>
+@endsection
+
 @section('contenu')
 <div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6 text-gray-800">Validation des demandes d'absence (Chef de service)</h1>
 
     @if (session('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">

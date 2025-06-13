@@ -1,9 +1,17 @@
-
 @extends('layouts.app')
+
+@section('title', 'Validation absence')
+
+@section('titreContenu')
+    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Validation des demandes d'absence</h1>
+@endsection
+
+@section('sousTitreContenu')
+    <p class="text-center text-lg text-black">Directeur</p>
+@endsection
 
 @section('contenu')
 <div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6 text-gray-800">Validation des demandes d'absence (Directeur)</h1>
 
     @if (session('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
@@ -47,9 +55,9 @@
                     </p>
                     <p class="text-gray-600 mb-4">
                         <span class="font-medium">Statut Chef :</span>
-                        @if ($demande->etat_chef == 'valide')
+                        @if ($demande->etat_chef == 'acceptée')
                             <span class="text-green-600 font-bold">Validée</span>
-                        @elseif ($demande->etat_chef == 'rejete')
+                        @elseif ($demande->etat_chef == 'rejetée')
                             <span class="text-red-600 font-bold">Rejetée</span>
                         @else
                             <span class="text-yellow-600 font-bold">En attente</span>
@@ -64,7 +72,7 @@
                         </button>
                         <button type="submit" name="action" value="rejetée"
                                 class="flex-1 bg-red-500 hover:bg-red-600 text-black font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
-                            Valider
+                            Rejeter
                         </button>
                     </form>
                 </div>

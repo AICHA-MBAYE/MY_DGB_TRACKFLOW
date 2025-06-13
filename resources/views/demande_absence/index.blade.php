@@ -1,7 +1,16 @@
 @extends('layouts.app')
 
+@section('title', 'Liste absence')
+
+@section('titreContenu')
+    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Mes demandes d'absence</h1>
+@endsection
+
+@section('sousTitreContenu')
+    <p class="text-center text-lg text-black">Voici la liste de vos demandes d'absence</p>
+@endsection
+
 @section('contenu')
-    <h2 class="mb-4 text-center" style="color: #2ecc71;">Mes demandes d'absence</h2>
 
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -34,7 +43,7 @@
                             <td style="color:
                                 @if ($demande->etat_chef === 'en_attente') #f39c12
                                 @elseif ($demande->etat_chef === 'acceptée') #2ecc71
-                                @elseif ($demande->etat_chef === 'refusée') #e74c3c
+                                @elseif ($demande->etat_chef === 'rejetée') #e74c3c
                                 @else #fff
                                 @endif;">
                                 {{ ucfirst($demande->etat_chef) }}
@@ -42,7 +51,7 @@
                             <td style="color:
                                 @if ($demande->etat_directeur === 'en_attente') #f39c12
                                 @elseif ($demande->etat_directeur === 'acceptée') #2ecc71
-                                @elseif ($demande->etat_directeur === 'refusée') #e74c3c
+                                @elseif ($demande->etat_directeur === 'rejetée') #e74c3c
                                 @else #fff
                                 @endif;">
                                 {{ ucfirst($demande->etat_directeur) }}

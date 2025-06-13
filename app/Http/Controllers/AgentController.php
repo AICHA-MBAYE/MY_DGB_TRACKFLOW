@@ -42,7 +42,7 @@ class AgentController extends Controller
                     'nom'=>'required',
                     'email' => 'required|email|unique:agents,email',
                     'role' => 'required|in:super_admin,admin_sectoriel,directeur,chef_service,agent',
-                    'direction' => 'required|in:DGCPT,DGD,DGID,DGB,DGSF'
+                    'direction' => 'required|in:DAP,DCI,DSI,DPB,CSS,CER'
 
 
 ]);

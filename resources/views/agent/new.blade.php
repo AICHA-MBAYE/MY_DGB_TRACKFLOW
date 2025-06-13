@@ -90,11 +90,12 @@
                     required
                     class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('direction') border-red-600 @enderror" style="color: black;">
                     <option value="">-- Sélectionnez une direction --</option>
-                    <option value="DGCPT" {{ old('direction') == 'DGCPT' ? 'selected' : '' }}>Direction Générale de la Comptabilité Publique et du Trésor (DGCPT)</option>
-                    <option value="DGD" {{ old('direction') == 'DGD' ? 'selected' : '' }}>Direction Générale des Douanes (DGD)</option>
-                    <option value="DGID" {{ old('direction') == 'DGID' ? 'selected' : '' }}>Direction Générale des Impôts et des Domaines (DGID)</option>
-                    <option value="DGB" {{ old('direction') == 'DGB' ? 'selected' : '' }}>Direction Générale du Budget (DGB)</option>
-                    <option value="DGSF" {{ old('direction') == 'DGSF' ? 'selected' : '' }}>Direction Générale du Secteur Financier (DGSF)</option>
+                    <option value="DAP" {{ old('direction') == 'DAP' ? 'selected' : '' }}>Direction de l'Administration et du Personnel (DAP)</option>
+                    <option value="DCI" {{ old('direction') == 'DCI' ? 'selected' : '' }}>Direction du Contrôle Interne (DCI)</option>
+                    <option value="DSI" {{ old('direction') == 'DSI' ? 'selected' : '' }}>Direction des Systèmes d'Information (DSI)</option>
+                    <option value="DPB" {{ old('direction') == 'DPB' ? 'selected' : '' }}>Direction de la Programmation Budgétaire (DPB)</option>
+                    <option value="CSS" {{ old('direction') == 'CSS' ? 'selected' : '' }}>Cellule de Suivi et de Synthèse(CSS)</option>
+                    <option value="CER" {{ old('direction') == 'CER' ? 'selected' : '' }}>Cellule des Etudes et de la Réglementation(CER)</option>
                 </select>
                 @error('direction')
                     <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>

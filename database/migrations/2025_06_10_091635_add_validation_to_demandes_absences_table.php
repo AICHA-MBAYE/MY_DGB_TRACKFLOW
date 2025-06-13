@@ -13,8 +13,8 @@ return new class extends Migration
 public function up()
 {
     Schema::table('demande_absences', function (Blueprint $table) {
-        $table->enum('etat_chef', ['en_attente', 'valide', 'rejete'])->default('en_attente');
-        $table->enum('etat_directeur', ['en_attente', 'valide', 'rejete'])->default('en_attente');
+        $table->enum('etat_chef', ['en_attente', 'acceptée', 'rejetée'])->default('en_attente');
+        $table->enum('etat_directeur', ['en_attente', 'acceptée', 'rejetée'])->default('en_attente');
     });
 }
 
