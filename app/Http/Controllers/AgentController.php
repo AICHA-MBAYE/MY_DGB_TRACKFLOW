@@ -17,42 +17,36 @@ class AgentController extends Controller
     use ValidatesRequests;
 
     /**
-     * Display a listing of the resource.
+     * Affiche la liste de tous les agents (pour l'administration, inclut les en attente).
      *
      * @return \Illuminate\View\View
      */
     public function index()
     {
-        // Récupération de la liste des agents
-        // Vous pourriez vouloir filtrer ou paginer cette liste pour des applications plus grandes
-        $agents = Agent::all(); // Récupère tous les agents, y compris ceux en attente, validés, rejetés.
-        // Retourner la page agents/index.blade.php avec la liste des agents
-        // J'ai mis à jour le nom de la vue selon notre discussion précédente
+        $agents = Agent::all();
         return view('agent.index', compact('agents'));
     }
 
 
     public function validatedIndex()
     {
-        // Récupère uniquement les agents dont le statut est 'validated'
         $agents = Agent::where('status', 'validated')->get();
         return view('agent.validated-agents', compact('agents'));
     }
+
     /**
-     * Show the form for creating a new agent (registration page for admin).
+     * Affiche le formulaire pour créer un nouvel agent (page d'inscription).
      *
      * @return \Illuminate\View\View
      */
     public function create()
     {
-        // Retourne la vue pour l'inscription d'un nouvel agent.
-        // J'ai mis à jour le nom de la vue pour refléter le nouveau fichier 'register-agent.blade.php'
         return view('auth.register-agent');
     }
 
     /**
-     * Store a newly created agent (registration) in storage.
-     * The agent's status will be 'pending' and no password will be set yet.
+     * Enregistre un nouvel agent (inscription) dans la base de données.
+     * Le statut de l'agent sera 'pending' et aucun mot de passe ne sera défini initialement.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
@@ -87,12 +81,12 @@ class AgentController extends Controller
             'status' => 'pending', // Le statut par défaut est 'pending' (en attente de validation)
         ]);
 
-        // Redirection vers la liste des agents avec un message de succès
-        return redirect()->route('agent.index')->with('success', 'Agent inscrit avec succès. En attente de validation.');
+        // Redirection vers la page d'accueil avec un message de succès spécifique
+        return redirect()->route('welcome')->with('success', 'Cher agent, votre inscription a bien été enregistrée. Pour accéder à l\'application, vous devez être approuvé par votre administrateur sectoriel. Veuillez vérifier vos mails pour suivre la suite de votre procédure.');
     }
 
     /**
-     * Display the specified resource.
+     * Affiche la ressource spécifiée.
      *
      * @param  \App\Models\Agent  $agent
      * @return \Illuminate\View\View
@@ -103,7 +97,7 @@ class AgentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Affiche le formulaire pour éditer la ressource spécifiée.
      *
      * @param  \App\Models\Agent  $agent
      * @return \Illuminate\View\View
@@ -114,7 +108,7 @@ class AgentController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Met à jour la ressource spécifiée dans la base de données.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Agent  $agent
@@ -223,7 +217,7 @@ class AgentController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Supprime la ressource spécifiée de la base de données.
      *
      * @param  \App\Models\Agent  $agent
      * @return \Illuminate\Http\RedirectResponse
