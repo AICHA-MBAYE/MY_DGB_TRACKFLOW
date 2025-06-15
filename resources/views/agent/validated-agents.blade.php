@@ -16,6 +16,9 @@
 
 {{-- Contenu principal de la page --}}
 @section('contenu')
+{{-- Importation de la façade Auth pour les vérifications de rôle --}}
+@php use Illuminate\Support\Facades\Auth; @endphp
+
 <div class="bg-white p-6 rounded shadow-md max-w-7xl mx-auto">
     <div class="overflow-x-auto">
         <table class="min-w-full border border-gray-300 rounded shadow">
@@ -29,7 +32,10 @@
                     <th class="px-4 py-2 border">Rôle</th>
                     <th class="px-4 py-2 border">Direction</th>
                     <th class="px-4 py-2 border">Statut</th>
-                    <th class="px-4 py-2 border w-1/5">Actions</th>
+                    {{-- La colonne Actions est affichée uniquement si l'utilisateur n'est PAS Chef de Service ou Directeur --}}
+                    @if (!in_array(Auth::user()->role, ['chef_service', 'directeur']))
+                        <th class="px-4 py-2 border w-1/5">Actions</th>
+                    @endif
                 </tr>
             </thead>
             {{-- Corps du tableau --}}
@@ -46,34 +52,36 @@
                             {{-- Affichage du statut de l'agent --}}
                             <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Validé</span>
                         </td>
-                        <td class="px-4 py-2 border">
-                            <div class="flex flex-wrap gap-2">
-                                {{-- Bouton Modifier --}}
-                                <a href="{{ route('agent.edit', $agent) }}" class="btn btn-primary bg-yellow-600 hover:bg-yellow-700">
-                                    Modifier
-                                </a>
+                        {{-- Les actions sont affichées uniquement si l'utilisateur n'est PAS Chef de Service ou Directeur --}}
+                        @if (!in_array(Auth::user()->role, ['chef_service', 'directeur']))
+                            <td class="px-4 py-2 border">
+                                <div class="flex flex-wrap gap-2">
+                                    {{-- Bouton Modifier --}}
+                                    <a href="{{ route('agent.edit', $agent) }}" class="btn btn-primary bg-yellow-600 hover:bg-yellow-700">
+                                        Modifier
+                                    </a>
 
-                                {{-- Formulaire Supprimer --}}
-                                <form action="{{ route('agent.destroy', $agent) }}" method="POST"
-                                        onsubmit="return confirm('Voulez-vous vraiment supprimer cet agent ?');" class="inline-block">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">
-                                        Supprimer
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                                    {{-- Formulaire Supprimer --}}
+                                    <form action="{{ route('agent.destroy', $agent) }}" method="POST"
+                                            onsubmit="return confirm('Voulez-vous vraiment supprimer cet agent ?');" class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        @endif
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="text-center py-4 text-gray-500">Aucun agent validé trouvé.</td>
+                        {{-- Ajuste le colspan en fonction de la visibilité de la colonne Actions --}}
+                        <td colspan="{{ !in_array(Auth::user()->role, ['chef_service', 'directeur']) ? '8' : '7' }}" class="text-center py-4 text-gray-500">Aucun agent validé trouvé.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-
-    {{-- Pas de bouton "Ajouter un agent" ici, car l'inscription se fait via la page "Inscrire un nouvel agent" --}}
 </div>
 @endsection

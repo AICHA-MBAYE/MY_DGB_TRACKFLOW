@@ -84,7 +84,7 @@
         }
 
         nav a:hover {
-            background-color: #216f05;
+            background-color: #e2e8f0; /* Couleur hover par défaut pour les liens de navigation */
         }
 
         .nav-right-buttons a {
@@ -95,7 +95,7 @@
         }
 
         .nav-right-buttons a:hover {
-            background-color: #216f05; /* Darker blue on hover */
+            background-color: #002a7b; /* Darker blue on hover */
         }
 
         /* Styles du pied de page */
@@ -203,6 +203,9 @@
     </style>
 </head>
 <body class="font-sans antialiased">
+    {{-- Importation de la façade Auth pour les vérifications de rôle --}}
+    @php use Illuminate\Support\Facades\Auth; @endphp
+
     <!-- Le conteneur principal de la page n'est plus nécessaire car header et footer sont fixes -->
     <!-- Le header et la nav sont maintenant combinés dans un en-tête fixe -->
     <div class="fixed-header-container">
@@ -214,19 +217,79 @@
         <nav class="nav-buttons">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                 <div>
-                    <a href="{{ route('dashboard') }}" class="dashboard-link">Dashboard</a>
+                    {{-- Le bouton Dashboard est toujours visible si l'utilisateur est connecté --}}
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="dashboard-link">Dashboard</a>
+                    @endauth
                 </div>
 
                 <div class="flex items-center nav-right-buttons">
-                    <a href="{{ route('agent.register') }}" class="btn btn-primary">Inscription</a>
-                    <a href="{{ route('agent.index') }}" class="btn btn-primary">Liste des agents</a>
-                    <a href="{{ route('agent.validated_index') }}" class="btn btn-primary">Agents Validés</a>
-                    <a href="{{ route('demande_absence.create') }}" class="btn btn-primary">Demande d'absence</a>
-                    <a href="{{ route('demande_absence.index') }}" class="btn btn-primary">Liste des absences</a>
+                    @guest
+                        {{-- SEUL le bouton "Inscription d'un nouvel agent" est visible pour les invités --}}
+                        <a href="{{ route('agent.register') }}" class="btn btn-primary">Inscription</a>
+                    @endguest
+
+                    @auth
+                        {{-- Logique d'affichage des boutons selon le rôle --}}
+
+                        {{-- Boutons pour l'Agent (rôle 'agent') --}}
+                        @if (Auth::user()->role === 'agent')
+                            <a href="{{ route('demande_absence.create') }}" class="btn btn-primary">Demande d'absence</a>
+                            <a href="{{ route('demande_absence.index') }}" class="btn btn-primary">Liste des absences</a>
+                        @endif
+
+                        {{-- Boutons pour le Chef de Service (rôle 'chef_service') --}}
+                        @if (Auth::user()->role === 'chef_service')
+                            <a href="{{ route('agent.validated_index') }}" class="btn btn-primary">Agents Validés</a>
+                            <a href="{{ route('chef.validation') }}" class="btn btn-primary">Validation</a>
+                        @endif
+
+                        {{-- Boutons pour le Directeur (rôle 'directeur') --}}
+                        @if (Auth::user()->role === 'directeur')
+                            <a href="{{ route('agent.validated_index') }}" class="btn btn-primary">Agents Validés</a>
+                            <a href="{{ route('directeur.validation') }}" class="btn btn-primary">Validation</a>
+                        @endif
+
+                        {{-- Boutons pour l'Administrateur Sectoriel et Super Administrateur --}}
+                        @if (in_array(Auth::user()->role, ['admin_sectoriel', 'super_admin']))
+                            <a href="{{ route('agent.index') }}" class="btn btn-primary">Gestion des Agents</a>
+                            <a href="{{ route('agent.validated_index') }}" class="btn btn-primary">Agents Validés</a>
+                            <a href="{{ route('demande_absence.create') }}" class="btn btn-primary">Demande d'absence</a>
+                            <a href="{{ route('demande_absence.index') }}" class="btn btn-primary">Liste des absences</a>
+                        @endif
+
+                        {{-- Bouton de déconnexion visible pour tous les utilisateurs authentifiés --}}
+                        <form method="POST" action="{{ route('logout') }}" class="inline-block">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">Déconnexion</button>
+                        </form>
+                    @endauth
                 </div>
             </div>
         </nav>
     </div>
+
+    <!-- Section pour afficher les messages flash (success, error, warning, info) -->
+    @if (session('success'))
+        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mx-auto max-w-7xl mt-4 rounded" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mx-auto max-w-7xl mt-4 rounded" role="alert">
+            {{ session('error') }}
+        </div>
+    @endif
+    @if (session('warning'))
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mx-auto max-w-7xl mt-4 rounded" role="alert">
+            {{ session('warning') }}
+        </div>
+    @endif
+    @if (session('info'))
+        <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mx-auto max-w-7xl mt-4 rounded" role="alert">
+            {{ session('info') }}
+        </div>
+    @endif
 
     <!-- En-tête de contenu (si présent) - Ajout d'une classe pour les styles spécifiques -->
     @hasSection('titreContenu')
@@ -248,6 +311,8 @@
     <footer>
         DGB-SENEGAL 2025 - Tous droits réservés
     </footer>
+</body>
+</html>
 
 <html lang="fr">
 <head>
