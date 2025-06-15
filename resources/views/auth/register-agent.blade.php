@@ -1,23 +1,29 @@
 @extends('layouts.app')
 
-@section('title', 'Ajouter un agent')
+{{-- Le titre de la page affiché dans le navigateur --}}
+@section('title', 'Inscription Agent')
 
+{{-- Titre principal du contenu affiché sur la page --}}
 @section('titreContenu')
-    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Ajouter un agent</h1>
+    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Inscription d'un nouvel agent</h1>
 @endsection
 
+{{-- Sous-titre du contenu --}}
 @section('sousTitreContenu')
-    <p class="text-center text-lg text-black">Remplissez les informations ci-dessous</p>
+    <p class="text-center text-xl text-black">Remplissez le formulaire d'inscription ci-dessous</p>
 @endsection
 
 
+{{-- Contenu principal du formulaire d'inscription --}}
 @section('contenu')
 <div class="bg-white p-6 rounded shadow-md max-w-3xl mx-auto">
+    {{-- Formulaire d'inscription --}}
+    {{-- L'action du formulaire pointe vers la route 'agent.store' pour gérer l'enregistrement --}}
     <form action="{{ route('agent.store') }}" method="POST" novalidate>
-        @csrf
+        @csrf {{-- Protection CSRF obligatoire pour les formulaires Laravel --}}
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Prénom -->
+            <!-- Champ Prénom -->
             <div>
                 <label for="prenom" class="block text-gray-700 font-semibold mb-2">Prénom</label>
                 <input
@@ -25,14 +31,16 @@
                     name="prenom"
                     type="text"
                     required
-                    value="{{ old('prenom') }}"
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('prenom') border-red-600 @enderror" style="color: black;"                >
-                @error('prenom')
+                    value="{{ old('prenom') }}" {{-- old() maintient la valeur en cas d'erreur de validation --}}
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('prenom') border-red-600 @enderror"
+                    style="color: black;"
+                >
+                @error('prenom') {{-- Affiche les erreurs de validation pour le champ 'prenom' --}}
                     <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
                 @enderror
             </div>
 
-            <!-- Nom -->
+            <!-- Champ Nom -->
             <div>
                 <label for="nom" class="block text-gray-700 font-semibold mb-2">Nom</label>
                 <input
@@ -41,14 +49,15 @@
                     type="text"
                     required
                     value="{{ old('nom') }}"
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('nom') border-red-600 @enderror"style="color: black;"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('nom') border-red-600 @enderror"
+                    style="color: black;"
                 >
                 @error('nom')
                     <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
                 @enderror
             </div>
 
-            <!-- Email (prend toute la largeur) -->
+            <!-- Champ Email (prend toute la largeur sur les écrans moyens) -->
             <div class="md:col-span-2">
                 <label for="email" class="block text-gray-700 font-semibold mb-2">Email</label>
                 <input
@@ -57,20 +66,23 @@
                     type="email"
                     required
                     value="{{ old('email') }}"
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('email') border-red-600 @enderror"style="color: black;"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('email') border-red-600 @enderror"
+                    style="color: black;"
                 >
                 @error('email')
                     <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
                 @enderror
             </div>
-             <!-- Rôle (liste déroulante) -->
-             <div class="md:col-span-2">
+
+            <!-- Liste déroulante Rôle -->
+            <div class="md:col-span-2">
                 <label for="role" class="block text-gray-700 font-semibold mb-2">Rôle</label>
-                <select 
+                <select
                     id="role"
                     name="role"
                     required
-                    class="w-full border-gray-300 rounded px-3py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('role') border-red-600 @enderror" style="color: black;">
+                    class="w-full border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('role') border-red-600 @enderror"
+                    style="color: black;">
                     <option value="">-- Sélectionnez un rôle --</option>
                     <option value="super_admin" {{ old('role') == 'super_admin' ? 'selected' : '' }}>Super-administrateur</option>
                     <option value="admin_sectoriel" {{ old('role') == 'admin_sectoriel' ? 'selected' : '' }}>Administrateur sectoriel</option>
@@ -81,15 +93,24 @@
                 @error('role')
                     <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
                 @enderror
-             </div>
-             <div class="md:col-span-2">
+            </div>
+
+            <!-- Liste déroulante Direction -->
+            <div class="md:col-span-2">
                 <label for="direction" class="block text-gray-700 font-semibold mb-2">Direction</label>
                 <select
                     id="direction"
                     name="direction"
                     required
-                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('direction') border-red-600 @enderror" style="color: black;">
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('direction') border-red-600 @enderror"
+                    style="color: black;">
                     <option value="">-- Sélectionnez une direction --</option>
+                    {{--
+                        Note: Si vos directions sont stockées en base de données, vous devriez itérer
+                        sur une collection de directions passée au lieu d'écrire en dur.
+                        Ex: @foreach($directions as $direction) <option value="{{ $direction->code }}">...</option> @endforeach
+                        Assurez-vous que la valeur (value) envoyée au serveur correspond à ce que votre validation attend (code ou ID).
+                    --}}
                     <option value="DAP" {{ old('direction') == 'DAP' ? 'selected' : '' }}>Direction de l'Administration et du Personnel (DAP)</option>
                     <option value="DCI" {{ old('direction') == 'DCI' ? 'selected' : '' }}>Direction du Contrôle Interne (DCI)</option>
                     <option value="DSI" {{ old('direction') == 'DSI' ? 'selected' : '' }}>Direction des Systèmes d'Information (DSI)</option>
@@ -103,12 +124,13 @@
             </div>
         </div>
 
+        {{-- Bouton d'inscription --}}
         <div class="mt-6 text-right">
             <button
                 type="submit"
-                class="bg-green-800 text-white px-6 py-2 rounded hover:bg-green-900 transition"
+                class="bg-blue-800 text-white px-6 py-2 rounded hover:bg-blue-900 transition" {{-- Couleur du bouton changée pour "Inscription" --}}
             >
-                Enregistrer
+                S'inscrire
             </button>
         </div>
     </form>

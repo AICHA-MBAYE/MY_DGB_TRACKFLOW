@@ -218,8 +218,9 @@
                 </div>
 
                 <div class="flex items-center nav-right-buttons">
-                    <a href="{{ route('agents.create') }}" class="btn btn-primary">Ajouter un agent</a>
-                    <a href="{{ route('agents.index') }}" class="btn btn-primary">Liste des agents</a>
+                    <a href="{{ route('agent.register') }}" class="btn btn-primary">Inscription</a>
+                    <a href="{{ route('agent.index') }}" class="btn btn-primary">Liste des agents</a>
+                    <a href="{{ route('agent.validated_index') }}" class="btn btn-primary">Agents Validés</a>
                     <a href="{{ route('demande_absence.create') }}" class="btn btn-primary">Demande d'absence</a>
                     <a href="{{ route('demande_absence.index') }}" class="btn btn-primary">Liste des absences</a>
                 </div>
