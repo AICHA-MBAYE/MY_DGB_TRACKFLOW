@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash; // Pour hacher les mots de passe
 use Illuminate\Support\Str; // Pour générer des mots de passe aléatoires
 use Illuminate\Support\Facades\Mail; // Pour l'envoi d'emails
 use App\Mail\AgentValidatedMail; // Nous allons créer cette classe plus tard
+use App\Models\DemandeAbsence;
 
 class AgentController extends Controller
 {
@@ -30,7 +31,7 @@ class AgentController extends Controller
         return view('agent.index', compact('agents'));
     }
 
-      
+
     public function validatedIndex()
     {
         // Récupère uniquement les agents dont le statut est 'validated'
@@ -232,4 +233,9 @@ class AgentController extends Controller
         $agent->delete();
         return redirect()->route('agent.index')->with('success', 'Agent supprimé avec succès.');
     }
+    public function downloadActe($id) {
+    $demande = DemandeAbsence::findOrFail($id);
+    $path = storage_path('app/'.$demande->pdf_path);
+    return response()->download($path);
+}
 }

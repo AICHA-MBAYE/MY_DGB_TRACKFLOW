@@ -13,7 +13,7 @@ return new class extends Migration
 {
     Schema::create('demande_absences', function (Blueprint $table) {
         $table->id();
-       //$table->unsignedBigInteger('user_id')->nullable();
+       $table->unsignedBigInteger('user_id')->nullable();
 
         $table->date('date_debut');
         $table->date('date_fin');

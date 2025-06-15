@@ -64,17 +64,28 @@
                         @endif
                     </p>
 
-                    <form action="{{ route('directeur.traiter', $demande->id) }}" method="POST" class="flex space-x-3">
-                        @csrf
-                        <button type="submit" name="action" value="acceptée"
-                                class="flex-1 bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
-                            Valider
-                        </button>
-                        <button type="submit" name="action" value="rejetée"
-                                class="flex-1 bg-red-500 hover:bg-red-600 text-black font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
-                            Rejeter
-                        </button>
-                    </form>
+                    <form method="POST" action="{{ route('directeur.traiter', $demande->id) }}">
+    @csrf
+    <select name="action" id="action" onchange="toggleMotif(this)">
+        <option value="acceptée">Accepter</option>
+        <option value="rejetée">Rejeter</option>
+    </select>
+    <div id="motif_rejet" style="display:none;">
+        <label>Motif du rejet :</label>
+        <select name="motif_rejet_directeur">
+            <option value="justificatif éronée">Justificatif éronée</option>
+            <option value="formulaire incomplet">Formulaire incomplet</option>
+            <option value="rejet definitif">Rejet définitif</option>
+        </select>
+    </div>
+    <button type="submit">Valider</button>
+</form>
+
+<script>
+function toggleMotif(select) {
+    document.getElementById('motif_rejet').style.display = select.value === 'rejetée' ? 'block' : 'none';
+}
+</script>
                 </div>
             @endforeach
         </div>

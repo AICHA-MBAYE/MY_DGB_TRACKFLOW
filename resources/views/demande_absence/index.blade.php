@@ -65,6 +65,15 @@
                                 </form>
                             </td>
                         </tr>
+                        <tr>
+                        <td>{{ $demande->date_debut }}</td>
+                        <td>{{ $demande->etat_directeur }}</td>
+                        <td>
+                            @if($demande->pdf_path)
+                                <a href="{{ route('agent.download_acte', $demande->id) }}">Télécharger l’acte</a>
+                            @endif
+                        </td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>

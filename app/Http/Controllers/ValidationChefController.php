@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Notifications\DemandeValideeNotification;
 use App\Models\DemandeAbsence;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ValidationChefController extends Controller
 {
@@ -12,13 +14,25 @@ class ValidationChefController extends Controller
 }
 
 public function traiter(Request $request, $id) {
-    $demande =DemandeAbsence::findOrFail($id);
+    $demande = DemandeAbsence::findOrFail($id);
     $demande->etat_chef = $request->input('action');
+    if ($request->input('action') === 'rejetée') {
+        $demande->motif_rejet_chef = $request->input('motif_rejet_chef');
+    } else {
+        $demande->motif_rejet_chef = null;
+    }
     $demande->save();
-    $user->notify(new DemandeValideeNotification($demande));
 
+    $agent = $demande->agent;
+$pdf = Pdf::loadView('acte_administratif', [
+    'demande' => $demande,
+    'agent' => $agent,
+]);
+$pdfPath = 'actes/acte_'.$demande->id.'.pdf';
+$pdf->save(storage_path('app/'.$pdfPath));
+$demande->pdf_path = $pdfPath;
+$demande->save();
 
-    // Ajouter une logique de notification ici
     return redirect()->route('chef.validation')->with('success', 'Demande traitée');
 }
 

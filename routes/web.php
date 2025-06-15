@@ -4,8 +4,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\DemandeAbsenceController;
 use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt; 
+use Livewire\Volt\Volt;
 use Illuminate\Support\Facades\Hash; // Ajoutez cette ligne en haut du fichier si elle n'y est pas
+use Barryvdh\DomPDF\Facade\Pdf;
 
 Route::get('/generate-password-hash', function () {
     $password = 'passer123'; // Remplacez par le mot de passe que vous voulez utiliser
@@ -29,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/agents/validated', [AgentController::class, 'validatedIndex'])->name('agent.validated_index');
-
+Route::get('/agent/acte/{id}/download', [AgentController::class, 'downloadActe'])->name('agent.download_acte');
     // Routes pour la gestion des agents
     // Utilisez la ressource pour les opérations CRUD standards (index, show, edit, update, destroy)
     // Laravel génère les noms de route comme 'agent.index', 'agent.store', 'agent.edit', etc.
