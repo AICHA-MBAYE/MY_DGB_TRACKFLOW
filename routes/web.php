@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
     // Utilisez la ressource pour les opérations CRUD standards (index, show, edit, update, destroy)
     // Laravel génère les noms de route comme 'agent.index', 'agent.store', 'agent.edit', etc.
     Route::resource('agent', AgentController::class)->except(['create', 'store']);
+    Route::get('/agent/actes/{id}/download' , [App\Http\Controllers\AgentController::class, 'downloadActe'])->name('agent.download_acte');
 
 
 

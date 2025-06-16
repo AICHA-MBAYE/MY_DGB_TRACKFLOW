@@ -95,7 +95,7 @@
         }
 
         .nav-right-buttons a:hover {
-            background-color: #002a7b; /* Darker blue on hover */
+            background-color: #0d5217; /* Darker blue on hover */
         }
 
         /* Styles du pied de page */
