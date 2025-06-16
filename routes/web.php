@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     // Laravel génère les noms de route comme 'agent.index', 'agent.store', 'agent.edit', etc.
     Route::resource('agent', AgentController::class)->except(['create', 'store']);
 
+Route::get('/agent/acte/{id}/download', [App\Http\Controllers\AgentController::class, 'downloadActe'])->name('agent.download_acte');
 
 
     // Nouvelles routes d'administration pour les agents (validation et rejet)
