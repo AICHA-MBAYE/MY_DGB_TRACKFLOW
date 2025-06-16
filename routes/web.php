@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('agent', AgentController::class)->except(['create', 'store']);
     Route::get('/agent/actes/{id}/download' , [App\Http\Controllers\AgentController::class, 'downloadActe'])->name('agent.download_acte');
 
+Route::get('/agent/acte/{id}/download', [App\Http\Controllers\AgentController::class, 'downloadActe'])->name('agent.download_acte');
 
 
     // Nouvelles routes d'administration pour les agents (validation et rejet)

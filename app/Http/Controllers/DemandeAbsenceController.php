@@ -45,7 +45,7 @@ public function destroy($id)
 }
 public function index()
 {
-    $demandes = DemandeAbsence::all(); // ou `where('user_id', ...)` si restriction
+    $demandes = DemandeAbsence::where('user_id', auth()->id())->get();
     return view('demande_absence.index', compact('demandes'));
 }
 
