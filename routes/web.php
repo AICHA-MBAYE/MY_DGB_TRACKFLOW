@@ -23,6 +23,11 @@ Route::get('/register-agent', [AgentController::class, 'create'])->name('agent.r
  // Route spécifique pour le traitement de l'inscription d'un nouvel agent
 Route::post('/agents', [AgentController::class, 'store'])->name('agent.store');
 
+
+Route::get('/inscription-rejetee/{agent}/modifier', [AgentController::class, 'editRejectedForm'])->name('agent.edit_rejected_form');
+// La méthode 'updateRejectedRegistration' traitera la soumission du formulaire.
+Route::post('/inscription-rejetee/{agent}/mettre-a-jour', [AgentController::class, 'updateRejectedRegistration'])->name('agent.update_rejected_registration');
+
 // Dashboard (auth + verified)
 Route::get('/dashboard', function () {
     return view('dashboard');

@@ -16,8 +16,8 @@
 
     {{-- Affiche le formulaire de connexion si l'utilisateur n'est PAS connecté --}}
     @guest
-        <div class="flex flex-col items-center justify-center min-h-screen -mt-20"> {{-- Ajustez le -mt-20 si besoin --}}
-            <div class="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+        <div class="flex flex-col items-center justify-center mt-4"> 
+        <div class="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
                 <h2 class="text-2xl font-bold text-center mb-6" style="color: rgb(34, 34, 155);">Connexion</h2>
 
                 <form method="POST" action="{{ route('login') }}">
