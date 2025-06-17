@@ -181,7 +181,7 @@ class AgentController extends Controller
         if ($user->role === 'admin_sectoriel' && $agent->direction !== $user->direction) {
             return redirect()->route('agent.index')->with('error', 'Vous n\'êtes pas autorisé à modifier cet agent car il ne fait pas partie de votre direction.');
         }
-        
+
         $this->validate($request, [
             'prenom' => 'required|string|max:255',
             'nom' => 'required|string|max:255',
@@ -338,6 +338,12 @@ class AgentController extends Controller
      * @param  \App\Models\Agent  $agent L'instance de l'agent à mettre à jour.
      * @return \Illuminate\Http\RedirectResponse
      */
+    public function downloadActe($id)
+{
+    $demande = DemandeAbsence::findOrFail($id);
+    $path = storage_path('app/' . $demande->pdf_path);
+    return response()->download($path);
+}
     public function updateRejectedRegistration(Request $request, Agent $agent)
     {
         // On s'assure que l'agent existe et que son statut est bien 'rejected'

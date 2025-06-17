@@ -56,6 +56,8 @@ public function index()
             'date_fin' => 'required|date|after_or_equal:date_debut',
             'motif' => 'required|string|max:500',
             'justificatif' => 'sometimes|nullable|mimes:pdf|max:2048',
+        ], [
+            'date_fin.after_or_equal' => 'La date de fin doit être postérieure ou égale à la date de début.',
         ]);
 
         $aujourdHui = Carbon::today();

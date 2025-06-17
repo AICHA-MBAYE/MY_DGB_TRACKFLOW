@@ -26,58 +26,62 @@
             <p class="text-sm">Il n'y a actuellement aucune demande d'absence en attente de validation de votre part.</p>
         </div>
     @else
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach ($demandes as $demande)
-                <div class="bg-white rounded-lg shadow-md overflow-hidden p-6">
-                    <h2 class="text-xl font-semibold mb-3 text-gray-700">Demande #{{ $demande->id }}</h2>
-                    <p class="text-gray-600 mb-2">
-                        <span class="font-medium">Agent :</span> {{ $demande->user->name ?? 'N/A' }} {{-- Assurez-vous que l'utilisateur est lié --}}
-                    </p>
-
-                    <p class="text-gray-600 mb-2">
-                        <span class="font-medium">Date de début :</span> {{ \Carbon\Carbon::parse($demande->date_debut)->format('d/m/Y') }}
-                    </p>
-                    <p class="text-gray-600 mb-2">
-                        <span class="font-medium">Date de fin :</span> {{ \Carbon\Carbon::parse($demande->date_fin)->format('d/m/Y') }}
-                    </p>
-                    <p class="text-gray-600 mb-2">
-                        <span class="font-medium">Motif :</span> {{ $demande->motif }}
-                    </p>
-                    <p class="text-gray-600 mb-4">
-                        <span class="font-medium">Justificatif :</span>
-                        @if ($demande->justificatif)
-                            <a href="{{ asset('storage/' . $demande->justificatif) }}" target="_blank" class="text-blue-500 hover:underline">
-                                Voir le justificatif
-                            </a>
-                        @else
-                            Aucun
-                        @endif
-                    </p>
-
-                    <form method="POST" action="{{ route('chef.traiter', $demande->id) }}">
-    @csrf
-    <select name="action" id="action" onchange="toggleMotif(this)">
-        <option value="acceptée">Accepter</option>
-        <option value="rejetée">Rejeter</option>
-    </select>
-    <div id="motif_rejet" style="display:none;">
-        <label>Motif du rejet :</label>
-        <select name="motif_rejet_chef">
-            <option value="justificatif éronée">Justificatif éronée</option>
-            <option value="formulaire incomplet">Formulaire incomplet</option>
-            <option value="rejet definitif">Rejet définitif</option>
-        </select>
-    </div>
-    <button type="submit">Valider</button>
-</form>
-
-<script>
-function toggleMotif(select) {
-    document.getElementById('motif_rejet').style.display = select.value === 'rejetée' ? 'block' : 'none';
-}
-</script>
-            @endforeach
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white rounded-lg shadow-md">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Agent</th>
+                        <th class="px-4 py-2">Date début</th>
+                        <th class="px-4 py-2">Date fin</th>
+                        <th class="px-4 py-2">Motif</th>
+                        <th class="px-4 py-2">Justificatif</th>
+                        <th class="px-4 py-2">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($demandes as $demande)
+                        <tr>
+                            <td class="border px-4 py-2">{{ $demande->agent->prenom ?? '' }} {{ $demande->agent->nom ?? '' }}</td>
+                            <td class="border px-4 py-2">{{ \Carbon\Carbon::parse($demande->date_debut)->format('d/m/Y') }}</td>
+                            <td class="border px-4 py-2">{{ \Carbon\Carbon::parse($demande->date_fin)->format('d/m/Y') }}</td>
+                            <td class="border px-4 py-2">{{ $demande->motif }}</td>
+                            <td class="border px-4 py-2">
+                                @if ($demande->justificatif)
+                                    <a href="{{ asset('storage/' . $demande->justificatif) }}" target="_blank" class="text-blue-500 hover:underline">
+                                        Voir
+                                    </a>
+                                @else
+                                    Aucun
+                                @endif
+                            </td>
+                            <td class="border px-4 py-2">
+                                <form method="POST" action="{{ route('chef.traiter', $demande->id) }}">
+                                    @csrf
+                                    <select name="action" onchange="toggleMotif(this, {{ $demande->id }})">
+                                        <option value="acceptée">Accepter</option>
+                                        <option value="rejetée">Rejeter</option>
+                                    </select>
+                                    <div id="motif_rejet_{{ $demande->id }}" style="display:none; margin-top:5px;">
+                                        <label>Motif du rejet :</label>
+                                        <select name="motif_rejet_chef">
+                                            <option value="justificatif éronée">Justificatif éronée</option>
+                                            <option value="formulaire incomplet">Formulaire incomplet</option>
+                                            <option value="rejet definitif">Rejet définitif</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-2">Valider</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
+        <script>
+            function toggleMotif(select, id) {
+                document.getElementById('motif_rejet_' + id).style.display = select.value === 'rejetée' ? 'block' : 'none';
+            }
+        </script>
     @endif
 </div>
 @endsection
