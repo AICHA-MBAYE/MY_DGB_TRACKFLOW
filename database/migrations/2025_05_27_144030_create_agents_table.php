@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('role');
             // Ajout du champ 'direction' comme string pour correspondre aux valeurs 'DAP', 'DCI', etc.
             $table->string('direction');
+            $table->string('division');
             // Ajout du champ 'password', qui peut être nullable car il est attribué après inscription
             $table->string('password')->nullable();
             // Ajout du champ 'status' avec des valeurs prédéfinies et une valeur par défaut 'pending'

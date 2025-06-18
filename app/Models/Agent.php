@@ -22,6 +22,7 @@ class Agent extends Authenticatable // Le modèle doit étendre Authenticatable 
         'email',
         'role',
         'direction',
+        'division',
         'password',       // Ajouté pour le mot de passe de l'agent
         'status',         // Ajouté pour le statut de l'agent (pending, validated, rejected)
     ];
