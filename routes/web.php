@@ -23,6 +23,7 @@ Route::get('/register-agent', [AgentController::class, 'create'])->name('agent.r
  // Route spécifique pour le traitement de l'inscription d'un nouvel agent
 Route::post('/agents', [AgentController::class, 'store'])->name('agent.store');
 
+Route::post('/demande_absence/{id}/submit', [DemandeAbsenceController::class, 'submit'])->name('demande_absence.submit');
 
 Route::get('/inscription-rejetee/{agent}/modifier', [AgentController::class, 'editRejectedForm'])->name('agent.edit_rejected_form');
 // La méthode 'updateRejectedRegistration' traitera la soumission du formulaire.
@@ -75,6 +76,7 @@ Route::get('/agent/acte/{id}/download', [App\Http\Controllers\AgentController::c
     Route::get('/directeur/validation', [\App\Http\Controllers\ValidationDirecteurController::class, 'index'])->name('directeur.validation');
     Route::post('/directeur/validation/{id}', [\App\Http\Controllers\ValidationDirecteurController::class, 'traiter'])->name('directeur.traiter');
 });
+
 
 // Routes d'authentification Laravel (login, register, reset password, etc.)
 require __DIR__.'/auth.php';

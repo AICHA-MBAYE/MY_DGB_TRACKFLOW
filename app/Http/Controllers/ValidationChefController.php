@@ -9,7 +9,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class ValidationChefController extends Controller
 {
     public function index() {
-    $demandes = DemandeAbsence::where('etat_chef', 'en_attente')->get();
+    $demandes = DemandeAbsence::where('etat_chef', 'en_attente')
+    ->where('statut', 'soumise')
+    ->get();
     return view('chef.validation', compact('demandes'));
 }
 
@@ -18,6 +20,8 @@ public function traiter(Request $request, $id) {
     $demande->etat_chef = $request->input('action');
     if ($request->input('action') === 'rejetée') {
         $demande->motif_rejet_chef = $request->input('motif_rejet_chef');
+   $demande->etat_directeur = 'rejetée';
+        $demande->motif_rejet_directeur = 'Rejet automatique suite au refus du chef de service (' . $request->input('motif_rejet_chef') . ')';
     } else {
         $demande->motif_rejet_chef = null;
     }
