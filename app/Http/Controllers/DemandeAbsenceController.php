@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DemandeAbsence;
+use App\Models\Agent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -85,4 +86,29 @@ public function index()
        return redirect()->route('demande_absence.index')->with('success', 'Demande envoyée avec succès.');
 
     }
+    public function stats(Request $request)
+{
+     $userId = auth()->id();
+    $annee = $request->input('annee', now()->year);
+
+ $annees = range(2025, now()->year);
+
+    // Nombre de jours ouvrés et de demandes par mois pour l'année sélectionnée
+    $demandes = DemandeAbsence::where('user_id', $userId)
+        ->whereYear('date_debut', $annee)
+        ->get();
+
+    $stats = [];
+    foreach (range(1, 12) as $mois) {
+        $duMois = $demandes->filter(function($d) use ($mois) {
+            return \Carbon\Carbon::parse($d->date_debut)->month == $mois;
+        });
+        $stats[$mois] = [
+            'nb_jours' => $duMois->sum('jours_ouvres'),
+            'nb_demandes' => $duMois->count(),
+        ];
+    }
+
+    return view('demande_absence.stats', compact('annee', 'annees', 'stats'));
+}
 }

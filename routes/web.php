@@ -24,6 +24,7 @@ Route::get('/register-agent', [AgentController::class, 'create'])->name('agent.r
 Route::post('/agents', [AgentController::class, 'store'])->name('agent.store');
 
 Route::post('/demande_absence/{id}/submit', [DemandeAbsenceController::class, 'submit'])->name('demande_absence.submit');
+Route::get('/demande-absence/statistiques', [\App\Http\Controllers\DemandeAbsenceController::class, 'stats'])->name('demande_absence.stats');
 
 Route::get('/inscription-rejetee/{agent}/modifier', [AgentController::class, 'editRejectedForm'])->name('agent.edit_rejected_form');
 // La méthode 'updateRejectedRegistration' traitera la soumission du formulaire.
@@ -75,6 +76,12 @@ Route::get('/agent/acte/{id}/download', [App\Http\Controllers\AgentController::c
     // Directeur
     Route::get('/directeur/validation', [\App\Http\Controllers\ValidationDirecteurController::class, 'index'])->name('directeur.validation');
     Route::post('/directeur/validation/{id}', [\App\Http\Controllers\ValidationDirecteurController::class, 'traiter'])->name('directeur.traiter');
+
+    // Liste des agents du chef de service
+Route::get('/chef/agents', [\App\Http\Controllers\ChefServiceController::class, 'agents'])->name('chef.agents');
+
+// Statistiques d'un agent
+Route::get('/chef/agent/{id}/stats', [\App\Http\Controllers\ChefServiceController::class, 'agentStats'])->name('chef.agent.stats');
 });
 
 

@@ -22,6 +22,9 @@
     @if ($demandes->isEmpty())
         <p class="text-center text-black">Vous n'avez encore aucune demande d'absence.</p>
     @else
+    <div class="text-center mt-4">
+    <a href="{{ route('demande_absence.stats') }}" class="btn btn-info">Voir statistiques</a>
+</div>
         <div class="table-responsive">
             <table class="table table-striped table-bordered text-black" style="background-color: #123a3c; border-radius: 8px;">
                 <thead>
@@ -77,6 +80,7 @@
                             </td>
                         </tr>
                     @endforeach
+
                 </tbody>
             </table>
         </div>
