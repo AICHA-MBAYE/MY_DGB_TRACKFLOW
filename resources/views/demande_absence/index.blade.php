@@ -22,16 +22,20 @@
     @if ($demandes->isEmpty())
         <p class="text-center text-black">Vous n'avez encore aucune demande d'absence.</p>
     @else
+    <div class="text-center mt-4">
+    <a href="{{ route('demande_absence.stats') }}" class="btn btn-info">Voir statistiques</a>
+</div>
         <div class="table-responsive">
             <table class="table table-striped table-bordered text-black" style="background-color: #123a3c; border-radius: 8px;">
                 <thead>
                     <tr>
-                        <th>Date de début</th>
-                        <th>Date de fin</th>
-                        <th>Motif</th>
-                        <th>statut_chef</th>
-                        <th>statut_directeur</th>
-                        <th>Actions</th>
+                         <th style="background-color:#003366; color:#fff;">Date de début</th>
+                        <th style="background-color:#003366; color:#fff;">Date de fin</th>
+                        <th style="background-color:#003366; color:#fff;">Motif</th>
+                        <th style="background-color:#003366; color:#fff;">Statut chef</th>
+                        <th style="background-color:#003366; color:#fff;">Statut directeur</th>
+                        <th style="background-color:#003366; color:#fff;">Statut</th>
+                        <th style="background-color:#003366; color:#fff;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,25 +60,27 @@
                                 @endif;">
                                 {{ ucfirst($demande->etat_directeur) }}
                             </td>
+                            <td>{{ ucfirst($demande->statut) }}</td>
                             <td>
-                                <a href="{{ route('demande_absence.edit', $demande->id) }}" class="btn btn-sm btn-primary">Modifier</a>
-                                <form action="{{ route('demande_absence.destroy', $demande->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Voulez-vous vraiment supprimer cette demande ?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
-                                </form>
+                                @if($demande->statut === 'brouillon')
+                                    <form action="{{ route('demande_absence.submit', $demande->id) }}" method="POST" style="display:inline-block;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Soumettre cette demande ?');">Soumettre</button>
+                                    </form>
+                                    <a href="{{ route('demande_absence.edit', $demande->id) }}" class="btn btn-sm btn-primary">Modifier</a>
+                                    <form action="{{ route('demande_absence.destroy', $demande->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Voulez-vous vraiment supprimer cette demande ?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+                                    </form>
+                                @endif
+                                @if($demande->pdf_path)
+                                    <a href="{{ route('agent.download_acte', $demande->id) }}" class="btn btn-sm btn-secondary">Télécharger l’acte</a>
+                                @endif
                             </td>
                         </tr>
-                        <tr>
-                        <td>{{ $demande->date_debut }}</td>
-                        <td>{{ $demande->etat_directeur }}</td>
-                        <td>
-                            @if($demande->pdf_path)
-                                <a href="{{ route('agent.download_acte', $demande->id) }}">Télécharger l’acte</a>
-                            @endif
-                        </td>
-                    </tr>
                     @endforeach
+
                 </tbody>
             </table>
         </div>
@@ -87,7 +93,6 @@
 @endsection
 
 <style>
-    /* Style pour le tableau, boutons, etc. */
     table {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         font-size: 1rem;

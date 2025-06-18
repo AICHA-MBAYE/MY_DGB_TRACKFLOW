@@ -341,11 +341,11 @@
             margin-top: 30px;
         }
         .btn-primary {
-            background-color: #006400; /* vert */
+            background-color: #0a0064; /* vert */
             border: none;
         }
         .btn-primary:hover {
-            background-color: #006400;
+            background-color: #003464;
         }
         label {
             font-weight: bold;

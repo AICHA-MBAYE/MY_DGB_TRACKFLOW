@@ -50,6 +50,6 @@
             <textarea name="motif" class="form-control  text-black" rows="3" required></textarea>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">Soumettre</button>
+        <button type="submit" class="btn btn-primary w-100">Enregistrer</button>
     </form>
 @endsection
