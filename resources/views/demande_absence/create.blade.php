@@ -25,13 +25,13 @@
 
         <div class="mb-3">
             <label for="date_debut" class="form-label">Date de début</label>
-           <input type="date" name="date_debut" class="form-control" min="{{ date('Y-m-d') }}" required>
+           <input type="date" name="date_debut" class="form-control"  required>
 
         </div>
 
         <div class="mb-3">
             <label for="date_fin" class="form-label">Date de fin</label>
-            <input type="date" name="date_fin" class="form-control" min="{{ date('Y-m-d') }}" required>
+            <input type="date" name="date_fin" class="form-control"      required>
 
         </div>
 

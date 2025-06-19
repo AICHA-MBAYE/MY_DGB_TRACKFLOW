@@ -61,12 +61,12 @@ public function index()
             'date_fin.after_or_equal' => 'La date de fin doit être postérieure ou égale à la date de début.',
         ]);
 
-        $aujourdHui = Carbon::today();
+      /*  $aujourdHui = Carbon::today();
         if (Carbon::parse($request->date_debut)->lt($aujourdHui)) {
             return back()->withErrors([
                 'date_debut' => 'La date de début ne peut pas être antérieure à aujourd\'hui.',
             ])->withInput();
-        }
+        }*/
 
         $filePath = null;
         if ($request->hasFile('justificatif')) {

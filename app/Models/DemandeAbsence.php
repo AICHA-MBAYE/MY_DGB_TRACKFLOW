@@ -31,9 +31,12 @@ public function agent()
         $start = Carbon::parse($this->date_debut);
         $end = Carbon::parse($this->date_fin);
         $joursFeries = [
-            '01-01', // 1er janvier
-            '05-01', // Fête du travail
-            // Ajoute d'autres jours fériés ici
+        '01-01', // Jour de l’An
+        '04-04', // Fête de l’Indépendance
+        '05-01', // Fête du Travail
+        '08-15', // Assomption
+        '11-01', // Toussaint
+        '12-25', // Noël
         ];
 
         $jours = 0;

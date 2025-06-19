@@ -40,6 +40,9 @@
                 </thead>
                 <tbody>
                     @foreach ($demandes as $demande)
+                     <li>
+                  Agent #{{ $demande->user_id }} | Du {{ $demande->date_debut }} au {{ $demande->date_fin }} | Statut chef : {{ $demande->etat_chef }}
+            </li>
                         <tr>
                             <td class="border px-4 py-2">{{ $demande->agent->prenom ?? '' }} {{ $demande->agent->nom ?? '' }}</td>
                             <td class="border px-4 py-2">{{ \Carbon\Carbon::parse($demande->date_debut)->format('d/m/Y') }}</td>
