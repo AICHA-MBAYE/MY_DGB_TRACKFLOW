@@ -250,6 +250,8 @@
                             @if (Auth::user()->role === 'chef_service')
                                 <a href="{{ route('agent.validated_index') }}" class="btn btn-primary">Agents Validés</a>
                                 <a href="{{ route('chef.validation') }}" class="btn btn-primary">Validation</a>
+                                {{-- NOUVEAU : Bouton Statistiques pour le Chef de Service --}}
+                                <a href="{{ route('chef.agents') }}" class="btn btn-primary">Statistiques</a>
                             @endif
 
                             {{-- Boutons pour le Directeur (rôle 'directeur') --}}
@@ -259,13 +261,12 @@
                             @endif
 
                             {{-- Boutons pour l'Administrateur Sectoriel et Super Administrateur (SANS le bouton d'inscription) --}}
+                            {{-- MODIFIÉ : Retrait des liens de demande d'absence et liste des absences --}}
                             @if (in_array(Auth::user()->role, ['admin_sectoriel', 'super_admin']))
                                 <a href="{{ route('agent.index') }}" class="btn btn-primary">Gestion des Agents</a>
                                 <a href="{{ route('agent.validated_index') }}" class="btn btn-primary">Agents Validés</a>
-                                <a href="{{ route('demande_absence.create') }}" class="btn btn-primary">Demande d'absence</a>
-                                <a href="{{ route('demande_absence.index') }}" class="btn btn-primary">Liste des absences</a>
                             @endif
-                        @endif {{-- Fin de la condition pour cacher les boutons pour les utilisateurs connectés --}}
+                        @endif {{-- Fin de la condition pour cacher les boutons --}}
 
                         {{-- Bouton de déconnexion visible pour tous les utilisateurs authentifiés, même sur la page de changement de mot de passe --}}
                         <form method="POST" action="{{ route('logout') }}" class="inline-block">
@@ -290,7 +291,7 @@
         </div>
     @endif
     @if (session('warning'))
-        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mx-auto max-w-7xl mt-4 rounded" role="alert">
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mx-auto max-w-7xl rounded" role="alert">
             {{ session('warning') }}
         </div>
     @endif

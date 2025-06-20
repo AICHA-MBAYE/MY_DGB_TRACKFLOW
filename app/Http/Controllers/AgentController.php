@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\AgentValidatedMail;
 use App\Mail\AgentRejectedMail;
 use Illuminate\Support\Facades\Auth;
-use App\Models\DemandeAbsence;
+use App\Models\DemandeAbsence; // Assurez-vous que ce modèle est bien utilisé dans downloadActe si c'est le cas.
 
 class AgentController extends Controller
 {
@@ -62,7 +62,7 @@ class AgentController extends Controller
         if (Auth::user()->role === 'chef_service') {
             $query = $this->filterAgentsByDivision($query);
         }
-
+        
         $agents = $query->get();
         return view('agent.index', compact('agents'));
     }
@@ -76,16 +76,21 @@ class AgentController extends Controller
     public function validatedIndex()
     {
         $query = Agent::where('status', 'validated');
+        $user = Auth::user(); // Obtenir l'utilisateur authentifié une seule fois
 
-        if (in_array(Auth::user()->role, ['chef_service', 'directeur', 'admin_sectoriel'])) {
+        if (in_array($user->role, ['chef_service', 'directeur', 'admin_sectoriel'])) {
              $query = $this->filterAgentsByDirection($query);
         }
-        if (Auth::user()->role === 'chef_service') {
+        if ($user->role === 'chef_service') {
             $query = $this->filterAgentsByDivision($query);
         }
         // Exclure les super administrateurs pour les admin sectoriels
-        if (Auth::user()->role === 'admin_sectoriel') {
+        if ($user->role === 'admin_sectoriel') {
             $query->where('role', '!=', 'super_admin');
+        }
+        // NOUVEAU : Exclure super_admin et admin_sectoriel pour les directeurs
+        if ($user->role === 'directeur') {
+            $query->whereNotIn('role', ['super_admin', 'admin_sectoriel']);
         }
 
         $agents = $query->get();
@@ -119,17 +124,17 @@ class AgentController extends Controller
                 'required',
                 Rule::in(['DAP', 'DCI', 'DSI', 'DPB', 'DCB', 'DODP', 'DS', 'DP', 'DMTA', 'CSS', 'CER'])
             ],
-            'division' => 'required|string|max:255',
+            'division' => 'required|string|max:255', 
         ]);
 
         $agent = Agent::create([
             'prenom' => $request->prenom,
             'nom' => $request->nom,
             'email' => $request->email,
-            'role' => null,
+            'role' => null, 
             'direction' => $request->direction,
-            'division' => $request->division,
-            'password' => null,
+            'division' => $request->division, 
+            'password' => null, 
             'status' => 'pending',
         ]);
 
@@ -187,7 +192,7 @@ class AgentController extends Controller
         if ($user->role === 'admin_sectoriel' && $agent->direction !== $user->direction) {
             return redirect()->route('agent.index')->with('error', 'Vous n\'êtes pas autorisé à modifier cet agent car il ne fait pas partie de votre direction.');
         }
-
+        
         $this->validate($request, [
             'prenom' => 'required|string|max:255',
             'nom' => 'required|string|max:255',
@@ -199,45 +204,37 @@ class AgentController extends Controller
                 Rule::unique('agents')->ignore($agent->id)
             ],
             'role' => [
-                'nullable',
+                'nullable', 
                 Rule::in(['super_admin', 'admin_sectoriel', 'directeur', 'chef_service', 'agent'])
             ],
             'direction' => [
                 'required',
                 Rule::in(['DAP', 'DCI', 'DSI', 'DPB', 'DCB', 'DORDP', 'DS', 'DP', 'DMTA', 'CSS', 'CER'])
             ],
-            'division' => 'nullable|string|max:255',
+            'division' => 'nullable|string|max:255', 
         ]);
 
         $agent->update([
             'prenom' => $request->prenom,
             'nom' => $request->nom,
             'email' => $request->email,
-            'role' => $request->role,
+            'role' => $request->role, 
             'direction' => $request->direction,
-            'division' => $request->division,
+            'division' => $request->division, 
         ]);
 
         return redirect()->route('agent.index')->with('success', 'Agent mis à jour avec succès.');
     }
 
-    public function assignRole(Request $request, Agent $agent)
-    {
-        $request->validate([
-            'role' => ['required', Rule::in(['super_admin', 'admin_sectoriel', 'directeur', 'chef_service', 'agent'])]
-        ]);
-        $agent->role = $request->role;
-
-        if (in_array($request->role, ['super_admin', 'admin_sectoriel', 'directeur'])) {
-        $agent->division = null;
-       }
-
-        $agent->save();
-
-        // Redirige vers la page précédente
-        return back()->with('success', 'Rôle assigné avec succès.');
-    }
-
+    /**
+     * Valide l'inscription d'un agent, lui attribue un mot de passe et un rôle.
+     * Restriction: admin_sectoriel ne peut valider que les agents de sa direction
+     * et ne peut pas attribuer les rôles super_admin ou admin_sectoriel.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Agent  $agent
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function validateAndAssignPassword(Request $request, Agent $agent)
     {
         $user = Auth::user();
@@ -295,11 +292,22 @@ class AgentController extends Controller
         return redirect()->route('agent.index')->with('success', 'Agent validé et mot de passe et rôle assignés.');
     }
 
+    /**
+     * Affiche le formulaire de changement de mot de passe (si c'est bien la responsabilité de ce contrôleur).
+     * Dans votre setup, cette fonction est dans ForcePasswordChangeController.php
+     * @return \Illuminate\View\View
+     */
     public function showChangePasswordForm()
-    {
+    { 
         return view('agent.change-password');
     }
 
+    /**
+     * Gère le changement de mot de passe (si c'est bien la responsabilité de ce contrôleur).
+     * Dans votre setup, cette fonction est dans ForcePasswordChangeController.php
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function changePassword(Request $request)
     {
        $request->validate([
@@ -307,13 +315,46 @@ class AgentController extends Controller
     ]);
 
     $user = Auth::user();
-    $user->password = bcrypt($request->password);
+    $user->password = Hash::make($request->password); // Utilisez Hash::make() au lieu de bcrypt()
     $user->must_change_password = false; // si tu utilises ce champ
     $user->save();
 
-    Auth::logout();
+    Auth::logout(); // Déconnexion de l'utilisateur
 
+    // Redirige vers la page de connexion
     return redirect()->route('login')->with('success', 'Connectez-vous avec votre nouveau mot de passe.');
+    }
+
+    /**
+     * Attribue un rôle à un agent existant.
+     * Cette méthode est séparée de la validation initiale.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Agent  $agent
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function assignRole(Request $request, Agent $agent)
+    {
+        $user = Auth::user();
+
+        // Vérification d'autorisation : seuls les super_admin et admin_sectoriel peuvent assigner un rôle.
+        if (!in_array($user->role, ['super_admin', 'admin_sectoriel'])) {
+            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à assigner des rôles.');
+        }
+        
+        $request->validate([
+            'role' => ['required', Rule::in(['super_admin', 'admin_sectoriel', 'directeur', 'chef_service', 'agent'])]
+        ]);
+        $agent->role = $request->role;
+        
+        // La division devient null si le rôle est 'super_admin', 'admin_sectoriel', ou 'directeur'
+        if (in_array($request->role, ['super_admin', 'admin_sectoriel', 'directeur'])) {
+            $agent->division = null;
+        }
+
+        $agent->save();
+
+        return back()->with('success', 'Rôle assigné avec succès.');
     }
 
     /**
@@ -342,8 +383,8 @@ class AgentController extends Controller
 
         $agent->update([
             'status' => 'rejected',
-            'password' => null,
-            'role' => null,
+            'password' => null, 
+            'role' => null, 
         ]);
 
         try {
@@ -421,17 +462,17 @@ class AgentController extends Controller
                 'required',
                 Rule::in(['DAP', 'DCI', 'DSI', 'DPB', 'DCB', 'DORDP', 'DS', 'DP', 'DMTA', 'CSS', 'CER'])
             ],
-            'division' => 'required|string|max:255',
+            'division' => 'required|string|max:255', 
         ]);
 
         $agent->update([
             'prenom' => $request->prenom,
             'nom' => $request->nom,
             'email' => $request->email,
-            'role' => null,
+            'role' => null, 
             'direction' => $request->direction,
-            'division' => $request->division,
-            'status' => 'pending',
+            'division' => $request->division, 
+            'status' => 'pending', 
         ]);
 
         return redirect()->route('welcome')->with('success', 'Votre inscription a été mise à jour et soumise à nouveau. Elle est en attente de validation par l\'administrateur sectoriel.');
@@ -452,5 +493,4 @@ class AgentController extends Controller
         $path = storage_path('app/' . $demande->pdf_path);
         return response()->download($path);
     }
-
 }
