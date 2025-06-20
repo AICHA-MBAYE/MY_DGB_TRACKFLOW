@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\AgentValidatedMail;
 use App\Mail\AgentRejectedMail;
 use Illuminate\Support\Facades\Auth;
+use App\Models\DemandeAbsence;
 
 class AgentController extends Controller
 {
@@ -124,7 +125,7 @@ class AgentController extends Controller
         if ($user->role === 'admin_sectoriel' && $agent->direction !== $user->direction) {
             return redirect()->route('agent.index')->with('error', 'Vous n\'êtes pas autorisé à modifier cet agent car il ne fait pas partie de votre direction.');
         }
-        
+
         $this->validate($request, [
             'prenom' => 'required|string|max:255',
             'nom' => 'required|string|max:255',
@@ -164,7 +165,7 @@ class AgentController extends Controller
             'role' => ['required', Rule::in(['super_admin', 'admin_sectoriel', 'directeur', 'chef_service', 'agent'])]
         ]);
         $agent->role = $request->role;
-        
+
         if (in_array($request->role, ['super_admin', 'admin_sectoriel', 'directeur'])) {
         $agent->division = null;
        }
@@ -216,7 +217,7 @@ class AgentController extends Controller
     }
 
     public function showChangePasswordForm()
-    { 
+    {
         return view('agent.change-password');
     }
 
@@ -321,4 +322,9 @@ class AgentController extends Controller
         $path = storage_path('app/' . $demande->pdf_path);
         return response()->download($path);
     }
+
+public function profil()
+{
+    return view('agent.profil'); // Crée la vue resources/views/agent/profil.blade.php
+}
 }
