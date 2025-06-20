@@ -95,7 +95,7 @@
         }
 
         .nav-right-buttons a:hover {
-            background-color: #0d5217; /* Darker blue on hover */
+            background-color: #002a7b; /* Darker blue on hover */
         }
 
         /* Styles du pied de page */
@@ -205,6 +205,8 @@
 <body class="font-sans antialiased">
     {{-- Importation de la façade Auth pour les vérifications de rôle --}}
     @php use Illuminate\Support\Facades\Auth; @endphp
+    {{-- Importation de la façade Route pour vérifier la route actuelle --}}
+    @php use Illuminate\Support\Facades\Route; @endphp
 
     <!-- Le conteneur principal de la page n'est plus nécessaire car header et footer sont fixes -->
     <!-- Le header et la nav sont maintenant combinés dans un en-tête fixe -->
@@ -218,6 +220,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                 <div>
                     {{-- Le bouton Dashboard est toujours visible si l'utilisateur est connecté --}}
+                    {{-- Il n'est pas caché car il n'est pas "en haut à droite" et peut être utile --}}
                     @auth
                         <a href="{{ route('dashboard') }}" class="dashboard-link">Dashboard</a>
                     @endauth
@@ -225,40 +228,46 @@
 
                 <div class="flex items-center nav-right-buttons">
                     @guest
-                        {{-- SEUL le bouton "Inscription d'un nouvel agent" est visible pour les invités --}}
-                        <a href="{{ route('agent.register') }}" class="btn btn-primary">Inscription</a>
+                        {{-- NOUVEAU : Le bouton "Inscription d'un nouvel agent" est visible pour les invités, SAUF sur la page de connexion. --}}
+                        @if (!Route::is('login'))
+                            <a href="{{ route('agent.register') }}" class="btn btn-primary">Inscription d'un agent</a>
+                        @endif
                     @endguest
 
                     @auth
-                        {{-- Logique d'affichage des boutons selon le rôle --}}
+                        {{-- NOUVEAU : Cacher tous les boutons de navigation (sauf Déconnexion) si l'utilisateur est sur la page de changement de mot de passe forcé --}}
+                        {{-- On vérifie si la route actuelle N'EST PAS 'password.force_change' --}}
+                        @if (!Route::is('password.force_change'))
+                            {{-- Logique d'affichage des boutons selon le rôle --}}
 
-                        {{-- Boutons pour l'Agent (rôle 'agent') --}}
-                        @if (Auth::user()->role === 'agent')
-                            <a href="{{ route('demande_absence.create') }}" class="btn btn-primary">Demande d'absence</a>
-                            <a href="{{ route('demande_absence.index') }}" class="btn btn-primary">Liste des absences</a>
-                        @endif
+                            {{-- Boutons pour l'Agent (rôle 'agent') --}}
+                            @if (Auth::user()->role === 'agent')
+                                <a href="{{ route('demande_absence.create') }}" class="btn btn-primary">Demande d'absence</a>
+                                <a href="{{ route('demande_absence.index') }}" class="btn btn-primary">Liste des absences</a>
+                            @endif
 
-                        {{-- Boutons pour le Chef de Service (rôle 'chef_service') --}}
-                        @if (Auth::user()->role === 'chef_service')
-                            <a href="{{ route('agent.validated_index') }}" class="btn btn-primary">Agents Validés</a>
-                            <a href="{{ route('chef.validation') }}" class="btn btn-primary">Validation</a>
-                        @endif
+                            {{-- Boutons pour le Chef de Service (rôle 'chef_service') --}}
+                            @if (Auth::user()->role === 'chef_service')
+                                <a href="{{ route('agent.validated_index') }}" class="btn btn-primary">Agents Validés</a>
+                                <a href="{{ route('chef.validation') }}" class="btn btn-primary">Validation</a>
+                            @endif
 
-                        {{-- Boutons pour le Directeur (rôle 'directeur') --}}
-                        @if (Auth::user()->role === 'directeur')
-                            <a href="{{ route('agent.validated_index') }}" class="btn btn-primary">Agents Validés</a>
-                            <a href="{{ route('directeur.validation') }}" class="btn btn-primary">Validation</a>
-                        @endif
+                            {{-- Boutons pour le Directeur (rôle 'directeur') --}}
+                            @if (Auth::user()->role === 'directeur')
+                                <a href="{{ route('agent.validated_index') }}" class="btn btn-primary">Agents Validés</a>
+                                <a href="{{ route('directeur.validation') }}" class="btn btn-primary">Validation</a>
+                            @endif
 
-                        {{-- Boutons pour l'Administrateur Sectoriel et Super Administrateur --}}
-                        @if (in_array(Auth::user()->role, ['admin_sectoriel', 'super_admin']))
-                            <a href="{{ route('agent.index') }}" class="btn btn-primary">Gestion des Agents</a>
-                            <a href="{{ route('agent.validated_index') }}" class="btn btn-primary">Agents Validés</a>
-                            <a href="{{ route('demande_absence.create') }}" class="btn btn-primary">Demande d'absence</a>
-                            <a href="{{ route('demande_absence.index') }}" class="btn btn-primary">Liste des absences</a>
-                        @endif
+                            {{-- Boutons pour l'Administrateur Sectoriel et Super Administrateur (SANS le bouton d'inscription) --}}
+                            @if (in_array(Auth::user()->role, ['admin_sectoriel', 'super_admin']))
+                                <a href="{{ route('agent.index') }}" class="btn btn-primary">Gestion des Agents</a>
+                                <a href="{{ route('agent.validated_index') }}" class="btn btn-primary">Agents Validés</a>
+                                <a href="{{ route('demande_absence.create') }}" class="btn btn-primary">Demande d'absence</a>
+                                <a href="{{ route('demande_absence.index') }}" class="btn btn-primary">Liste des absences</a>
+                            @endif
+                        @endif {{-- Fin de la condition pour cacher les boutons pour les utilisateurs connectés --}}
 
-                        {{-- Bouton de déconnexion visible pour tous les utilisateurs authentifiés --}}
+                        {{-- Bouton de déconnexion visible pour tous les utilisateurs authentifiés, même sur la page de changement de mot de passe --}}
                         <form method="POST" action="{{ route('logout') }}" class="inline-block">
                             @csrf
                             <button type="submit" class="btn btn-danger">Déconnexion</button>

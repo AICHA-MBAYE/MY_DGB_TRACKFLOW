@@ -16,7 +16,8 @@ class AuthenticatedSessionController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/'; // Cette propriété définit la redirection après la connexion
+    // Redirection par défaut vers le tableau de bord
+    protected $redirectTo = '/'; 
 
     /**
      * Display the login view.
@@ -35,8 +36,15 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // La redirection est maintenant gérée par la propriété $redirectTo,
-        // ce qui redirigera vers la page d'accueil (/) après une connexion réussie.
+        $user = Auth::user();
+
+        // NOUVEAU : Vérifier si l'utilisateur doit changer son mot de passe
+        // Si 'must_change_password' est vrai, rediriger vers la page de changement de mot de passe forcé
+        if ($user && $user->must_change_password) {
+            return redirect()->route('password.force_change');
+        }
+
+        // Si aucun changement forcé n'est requis, rediriger vers la destination prévue (tableau de bord par défaut)
         return redirect()->intended($this->redirectTo);
     }
 

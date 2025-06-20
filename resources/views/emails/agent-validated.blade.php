@@ -27,7 +27,8 @@
                 <p style="font-size: 0.9em; color: #555;">Nous vous recommandons de modifier ce mot de passe après votre première connexion.</p>
             </div>
             <p>Cliquez sur le bouton ci-dessous pour accéder à la page de connexion :</p>
-            <a href="{{ route('login') }}" class="button">Se connecter</a>
+            {{-- MODIFICATION : Ajout du paramètre 'email' à la route de connexion --}}
+            <a href="{{ route('login', ['email' => $agent->email]) }}" class="button">Se connecter</a>
             <p>Si vous avez des questions, n'hésitez pas à nous contacter.</p>
             <p>Cordialement,</p>
             <p>L'équipe MY_DGB_TRACKFLOW</p>

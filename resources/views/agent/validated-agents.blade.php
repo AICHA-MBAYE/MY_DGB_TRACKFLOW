@@ -39,7 +39,7 @@
                         <td class="px-4 py-2 border" style="color: black;">{{ $agent->email }}</td>
                         <td class="px-4 py-2 border" style="color: black;">{{ ucfirst(str_replace('_', ' ', $agent->role)) }}</td>
                         <td class="px-4 py-2 border" style="color: black;">{{ ucfirst(str_replace('_', ' ', $agent->direction)) }}</td>
-                        <td class="px-4 py-2 border" style="color: black;">{{ ucfirst(str_replace('_', ' ', $agent->division ?? 'N/A')) }}</td>
+                        <td class="px-4 py-2 border" style="color: black;">{{ ucfirst(str_replace('_', ' ', $agent->division ?? '')) }}</td>
                         @if (!in_array(Auth::user()->role, ['chef_service', 'directeur']))
                             <td class="px-4 py-2 border">
                                 <div class="flex flex-wrap gap-2">

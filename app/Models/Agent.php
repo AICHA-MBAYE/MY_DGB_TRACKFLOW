@@ -49,5 +49,6 @@ class Agent extends Authenticatable // Le modèle doit étendre Authenticatable 
     protected $casts = [
         'password' => 'hashed', // Hachage automatique du mot de passe
         'email_verified_at' => 'datetime', // Si vous utilisez la vérification d'email
+        'must_change_password' =>'boolean',
     ];
 }
