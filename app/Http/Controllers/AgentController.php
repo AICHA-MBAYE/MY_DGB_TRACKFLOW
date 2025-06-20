@@ -62,7 +62,7 @@ class AgentController extends Controller
         if (Auth::user()->role === 'chef_service') {
             $query = $this->filterAgentsByDivision($query);
         }
-        
+
         $agents = $query->get();
         return view('agent.index', compact('agents'));
     }
@@ -119,17 +119,17 @@ class AgentController extends Controller
                 'required',
                 Rule::in(['DAP', 'DCI', 'DSI', 'DPB', 'DCB', 'DODP', 'DS', 'DP', 'DMTA', 'CSS', 'CER'])
             ],
-            'division' => 'required|string|max:255', 
+            'division' => 'required|string|max:255',
         ]);
 
         $agent = Agent::create([
             'prenom' => $request->prenom,
             'nom' => $request->nom,
             'email' => $request->email,
-            'role' => null, 
+            'role' => null,
             'direction' => $request->direction,
-            'division' => $request->division, 
-            'password' => null, 
+            'division' => $request->division,
+            'password' => null,
             'status' => 'pending',
         ]);
 
@@ -199,23 +199,23 @@ class AgentController extends Controller
                 Rule::unique('agents')->ignore($agent->id)
             ],
             'role' => [
-                'nullable', 
+                'nullable',
                 Rule::in(['super_admin', 'admin_sectoriel', 'directeur', 'chef_service', 'agent'])
             ],
             'direction' => [
                 'required',
                 Rule::in(['DAP', 'DCI', 'DSI', 'DPB', 'DCB', 'DORDP', 'DS', 'DP', 'DMTA', 'CSS', 'CER'])
             ],
-            'division' => 'nullable|string|max:255', 
+            'division' => 'nullable|string|max:255',
         ]);
 
         $agent->update([
             'prenom' => $request->prenom,
             'nom' => $request->nom,
             'email' => $request->email,
-            'role' => $request->role, 
+            'role' => $request->role,
             'direction' => $request->direction,
-            'division' => $request->division, 
+            'division' => $request->division,
         ]);
 
         return redirect()->route('agent.index')->with('success', 'Agent mis à jour avec succès.');
@@ -227,7 +227,7 @@ class AgentController extends Controller
             'role' => ['required', Rule::in(['super_admin', 'admin_sectoriel', 'directeur', 'chef_service', 'agent'])]
         ]);
         $agent->role = $request->role;
-        
+
         if (in_array($request->role, ['super_admin', 'admin_sectoriel', 'directeur'])) {
         $agent->division = null;
        }
@@ -296,25 +296,24 @@ class AgentController extends Controller
     }
 
     public function showChangePasswordForm()
-    { 
+    {
         return view('agent.change-password');
     }
 
     public function changePassword(Request $request)
     {
-        $request->validate([
-            'role' => ['required', Rule::in(['super_admin', 'admin_sectoriel', 'directeur', 'chef_service', 'agent'])]
-        ]);
-        $agent->role = $request->role;
-        
-        // La division devient null si le rôle est 'super_admin', 'admin_sectoriel', ou 'directeur'
-        if (in_array($request->role, ['super_admin', 'admin_sectoriel', 'directeur'])) {
-            $agent->division = null;
-        }
+       $request->validate([
+        'password' => 'required|confirmed|min:8',
+    ]);
 
-        $agent->save();
+    $user = Auth::user();
+    $user->password = bcrypt($request->password);
+    $user->must_change_password = false; // si tu utilises ce champ
+    $user->save();
 
-        return back()->with('success', 'Rôle assigné avec succès.');
+    Auth::logout();
+
+    return redirect()->route('login')->with('success', 'Connectez-vous avec votre nouveau mot de passe.');
     }
 
     /**
@@ -343,8 +342,8 @@ class AgentController extends Controller
 
         $agent->update([
             'status' => 'rejected',
-            'password' => null, 
-            'role' => null, 
+            'password' => null,
+            'role' => null,
         ]);
 
         try {
@@ -422,17 +421,17 @@ class AgentController extends Controller
                 'required',
                 Rule::in(['DAP', 'DCI', 'DSI', 'DPB', 'DCB', 'DORDP', 'DS', 'DP', 'DMTA', 'CSS', 'CER'])
             ],
-            'division' => 'required|string|max:255', 
+            'division' => 'required|string|max:255',
         ]);
 
         $agent->update([
             'prenom' => $request->prenom,
             'nom' => $request->nom,
             'email' => $request->email,
-            'role' => null, 
+            'role' => null,
             'direction' => $request->direction,
-            'division' => $request->division, 
-            'status' => 'pending', 
+            'division' => $request->division,
+            'status' => 'pending',
         ]);
 
         return redirect()->route('welcome')->with('success', 'Votre inscription a été mise à jour et soumise à nouveau. Elle est en attente de validation par l\'administrateur sectoriel.');
@@ -454,8 +453,4 @@ class AgentController extends Controller
         return response()->download($path);
     }
 
-public function profil()
-{
-    return view('agent.profil'); // Crée la vue resources/views/agent/profil.blade.php
-}
 }
