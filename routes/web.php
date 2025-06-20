@@ -49,10 +49,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/agents/validated', [AgentController::class, 'validatedIndex'])->name('agent.validated_index');
+    
 
-    // Routes pour la gestion des agents (CRUD - Index, Show, Edit, Update, Destroy)
-    // Les routes 'create' et 'store' sont exclues ici car elles sont maintenant publiques ci-dessus.
+    Route::get('/password/change', [AgentController::class, 'showChangePasswordForm'])->name('password.change.form');
+    Route::post('/password/change', [AgentController::class, 'changePassword'])->name('password.change');
+
+    
+    // Routes pour la gestion des agents
+    // Utilisez la ressource pour les opérations CRUD standards (index, show, edit, update, destroy)
+    // Laravel génère les noms de route comme 'agent.index', 'agent.store', 'agent.edit', etc.
     Route::resource('agent', AgentController::class)->except(['create', 'store']);
+    Route::get('/agent/actes/{id}/download' , [App\Http\Controllers\AgentController::class, 'downloadActe'])->name('agent.download_acte');
+    Route::post('/agents/{agent}/assign-role', [AgentController::class, 'assignRole'])->name('agent.assignRole');
 
     // Routes spécifiques d'administration pour les agents (validation et rejet)
     Route::post('/agents/{agent}/validate-password', [AgentController::class, 'validateAndAssignPassword'])->name('agent.validateAndAssignPassword');

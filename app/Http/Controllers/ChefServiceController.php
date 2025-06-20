@@ -9,50 +9,57 @@ use App\Models\DemandeAbsence;
 class ChefServiceController extends Controller
 {
     public function agents(Request $request)
-{
-    $search = $request->input('search');
-    // À adapter selon ta structure : ici on suppose que les agents ont un champ direction ou chef_service_id
-    $agents = Agent::when($search, function($query, $search) {
-            $query->where(function($q) use ($search) {
-                $q->where('prenom', 'like', "%$search%")
-                  ->orWhere('nom', 'like', "%$search%");
-            });
-        })
-        ->get();
+    {
+        // Récupère la division du chef connecté
+        $division = auth()->user()->division;
+        $search = $request->input('search');
 
-    return view('chef.agents', compact('agents', 'search'));
-}
+        // Filtre les agents de la même division (hors chefs si besoin)
+        $agents = Agent::where('division', $division)
+            ->where('role', 'agent')
+            ->when($search, function($query, $search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('prenom', 'like', "%$search%")
+                      ->orWhere('nom', 'like', "%$search%");
+                });
+            })
+            ->get();
 
-public function agentStats($id, Request $request)
-{
-    $agent = Agent::findOrFail($id);
-    $annee = $request->input('annee', now()->year);
-
-    $annees = DemandeAbsence::where('user_id', $agent->id)
-        ->selectRaw('YEAR(date_debut) as annee')
-        ->distinct()
-        ->pluck('annee');
-
-    $demandes = DemandeAbsence::where('user_id', $agent->id)
-        ->whereYear('date_debut', $annee)
-        ->get();
-
-    $stats = [];
-    foreach (range(1, 12) as $mois) {
-        $duMois = $demandes->filter(function($d) use ($mois) {
-            return \Carbon\Carbon::parse($d->date_debut)->month == $mois;
-        });
-        $stats[$mois] = [
-            'nb_jours' => $duMois->sum('jours_ouvres'),
-            'nb_demandes' => $duMois->count(),
-        ];
+        return view('chef.agents', compact('agents', 'search'));
     }
 
-    return view('demande_absence.stats', [
-        'agent' => $agent,
-        'annee' => $annee,
-        'annees' => $annees,
-        'stats' => $stats,
-    ]);
-}
+    public function agentStats($id, Request $request)
+    {
+        $agent = Agent::findOrFail($id);
+
+        // Vérifie que l'agent appartient à la division du chef
+        if ($agent->division !== auth()->user()->division) {
+            abort(403, "Accès refusé.");
+        }
+
+        $annee = $request->input('annee', now()->year);
+        $annees = range(2025, now()->year);
+
+        $demandes = DemandeAbsence::where('user_id', $agent->id)
+            ->whereYear('date_debut', $annee)
+            ->get();
+
+        $stats = [];
+        foreach (range(1, 12) as $mois) {
+            $duMois = $demandes->filter(function($d) use ($mois) {
+                return \Carbon\Carbon::parse($d->date_debut)->month == $mois;
+            });
+            $stats[$mois] = [
+                'nb_jours' => $duMois->sum('jours_ouvres'),
+                'nb_demandes' => $duMois->count(),
+            ];
+        }
+
+        return view('demande_absence.stats', [
+            'agent' => $agent,
+            'annee' => $annee,
+            'annees' => $annees,
+            'stats' => $stats,
+        ]);
+    }
 }

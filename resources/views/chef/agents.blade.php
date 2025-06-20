@@ -16,6 +16,7 @@
                 <th>Prénom</th>
                 <th>Nom</th>
                 <th>Direction</th>
+                <th>Division</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -25,13 +26,14 @@
                     <td>{{ $agent->prenom }}</td>
                     <td>{{ $agent->nom }}</td>
                     <td>{{ $agent->direction ?? '-' }}</td>
+                    <td>{{ $agent->division ?? '-' }}</td>
                     <td>
                         <a href="{{ route('chef.agent.stats', $agent->id) }}" class="btn btn-info btn-sm">Voir statistiques</a>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="4">Aucun agent trouvé.</td>
+                    <td colspan="5">Aucun agent trouvé.</td>
                 </tr>
             @endforelse
         </tbody>

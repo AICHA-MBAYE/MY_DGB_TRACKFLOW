@@ -34,17 +34,19 @@
                         <th class="px-4 py-2">Date début</th>
                         <th class="px-4 py-2">Date fin</th>
                         <th class="px-4 py-2">Motif</th>
+                        <th class="px-4 py-2">Direction</th>
                         <th class="px-4 py-2">Justificatif</th>
                         <th class="px-4 py-2">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($demandes as $demande)
-                        <tr>
+                   <tr>
                             <td class="border px-4 py-2">{{ $demande->agent->prenom ?? '' }} {{ $demande->agent->nom ?? '' }}</td>
                             <td class="border px-4 py-2">{{ \Carbon\Carbon::parse($demande->date_debut)->format('d/m/Y') }}</td>
                             <td class="border px-4 py-2">{{ \Carbon\Carbon::parse($demande->date_fin)->format('d/m/Y') }}</td>
                             <td class="border px-4 py-2">{{ $demande->motif }}</td>
+                            <td class="border px-4 py-2">{{ $demande->agent->direction ?? '-' }}</td>
                             <td class="border px-4 py-2">
                                 @if ($demande->justificatif)
                                     <a href="{{ asset('storage/' . $demande->justificatif) }}" target="_blank" class="text-blue-500 hover:underline">

@@ -32,6 +32,7 @@
                          <th style="background-color:#003366; color:#fff;">Date de début</th>
                         <th style="background-color:#003366; color:#fff;">Date de fin</th>
                         <th style="background-color:#003366; color:#fff;">Motif</th>
+                         <th style="background-color:#003366; color:#fff;">Division</th>
                         <th style="background-color:#003366; color:#fff;">Statut chef</th>
                         <th style="background-color:#003366; color:#fff;">Statut directeur</th>
                         <th style="background-color:#003366; color:#fff;">Statut</th>
@@ -44,6 +45,7 @@
                             <td>{{ \Carbon\Carbon::parse($demande->date_debut)->format('d/m/Y') }}</td>
                             <td>{{ \Carbon\Carbon::parse($demande->date_fin)->format('d/m/Y') }}</td>
                             <td>{{ $demande->motif }}</td>
+                            <td>{{ $demande->agent->division ?? '-' }}</td>
                             <td style="color:
                                 @if ($demande->etat_chef === 'en_attente') #f39c12
                                 @elseif ($demande->etat_chef === 'acceptée') #2ecc71
@@ -74,7 +76,11 @@
                                         <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
                                     </form>
                                 @endif
-                                @if($demande->pdf_path)
+                                @if(
+                                    $demande->pdf_path &&
+                                    $demande->etat_chef !== 'en_attente' &&
+                                    $demande->etat_directeur !== 'en_attente'
+                                )
                                     <a href="{{ route('agent.download_acte', $demande->id) }}" class="btn btn-sm btn-secondary">Télécharger l’acte</a>
                                 @endif
                             </td>

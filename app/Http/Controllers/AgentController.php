@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\AgentValidatedMail;
 use App\Mail\AgentRejectedMail;
 use Illuminate\Support\Facades\Auth;
+use App\Models\DemandeAbsence;
 
 class AgentController extends Controller
 {
@@ -186,7 +187,7 @@ class AgentController extends Controller
         if ($user->role === 'admin_sectoriel' && $agent->direction !== $user->direction) {
             return redirect()->route('agent.index')->with('error', 'Vous n\'êtes pas autorisé à modifier cet agent car il ne fait pas partie de votre direction.');
         }
-        
+
         $this->validate($request, [
             'prenom' => 'required|string|max:255',
             'nom' => 'required|string|max:255',
@@ -220,15 +221,23 @@ class AgentController extends Controller
         return redirect()->route('agent.index')->with('success', 'Agent mis à jour avec succès.');
     }
 
-    /**
-     * Valide l'inscription d'un agent, lui attribue un mot de passe et un rôle.
-     * Restriction: admin_sectoriel ne peut valider que les agents de sa direction
-     * et ne peut pas attribuer les rôles super_admin ou admin_sectoriel.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Agent  $agent
-     * @return \Illuminate\Http\RedirectResponse
-     */
+    public function assignRole(Request $request, Agent $agent)
+    {
+        $request->validate([
+            'role' => ['required', Rule::in(['super_admin', 'admin_sectoriel', 'directeur', 'chef_service', 'agent'])]
+        ]);
+        $agent->role = $request->role;
+        
+        if (in_array($request->role, ['super_admin', 'admin_sectoriel', 'directeur'])) {
+        $agent->division = null;
+       }
+
+        $agent->save();
+
+        // Redirige vers la page précédente
+        return back()->with('success', 'Rôle assigné avec succès.');
+    }
+
     public function validateAndAssignPassword(Request $request, Agent $agent)
     {
         $user = Auth::user();
@@ -286,23 +295,13 @@ class AgentController extends Controller
         return redirect()->route('agent.index')->with('success', 'Agent validé et mot de passe et rôle assignés.');
     }
 
-    /**
-     * Attribue un rôle à un agent existant.
-     * Cette méthode est séparée de la validation initiale.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Agent  $agent
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function assignRole(Request $request, Agent $agent)
-    {
-        $user = Auth::user();
+    public function showChangePasswordForm()
+    { 
+        return view('agent.change-password');
+    }
 
-        // Vérification d'autorisation : seuls les super_admin et admin_sectoriel peuvent assigner un rôle.
-        if (!in_array($user->role, ['super_admin', 'admin_sectoriel'])) {
-            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à assigner des rôles.');
-        }
-        
+    public function changePassword(Request $request)
+    {
         $request->validate([
             'role' => ['required', Rule::in(['super_admin', 'admin_sectoriel', 'directeur', 'chef_service', 'agent'])]
         ]);
@@ -454,4 +453,9 @@ class AgentController extends Controller
         $path = storage_path('app/' . $demande->pdf_path);
         return response()->download($path);
     }
+
+public function profil()
+{
+    return view('agent.profil'); // Crée la vue resources/views/agent/profil.blade.php
+}
 }
