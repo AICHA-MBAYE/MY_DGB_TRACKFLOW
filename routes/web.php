@@ -22,6 +22,10 @@ Route::get('/', function () {
 Route::get('/register-agent', [AgentController::class, 'create'])->name('agent.register');
 Route::post('/agents', [AgentController::class, 'store'])->name('agent.store');
 
+Route::post('/demande_absence/{id}/submit', [DemandeAbsenceController::class, 'submit'])->name('demande_absence.submit');
+Route::get('/demande-absence/statistiques', [\App\Http\Controllers\DemandeAbsenceController::class, 'stats'])->name('demande_absence.stats');
+
+
 // Routes pour la modification d'inscription rejetée (accessibles sans être connecté)
 Route::get('/inscription-rejetee/{agent}/modifier', [AgentController::class, 'editRejectedForm'])->name('agent.edit_rejected_form');
 Route::post('/inscription-rejetee/{agent}/mettre-a-jour', [AgentController::class, 'updateRejectedRegistration'])->name('agent.update_rejected_registration');
