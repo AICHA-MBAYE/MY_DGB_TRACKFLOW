@@ -5,13 +5,10 @@
 
 {{-- Titre principal du contenu affiché sur la page --}}
 @section('titreContenu')
-    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Inscription d'un nouvel agent</h1>
+    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Inscription</h1>
 @endsection
 
-{{-- Sous-titre du contenu --}}
-@section('sousTitreContenu')
-    <p class="text-center text-xl text-black">Remplissez le formulaire d'inscription ci-dessous</p>
-@endsection
+
 
 
 {{-- Contenu principal du formulaire d'inscription --}}
@@ -124,7 +121,7 @@
         <div class="mt-6 text-right">
             <button
                 type="submit"
-                class="bg-blue-800 text-white px-6 py-2 rounded hover:bg-blue-900 transition"
+                class="bg-blue-800 text-black px-6 py-2 rounded hover:bg-blue-900 transition"
             >
                 S'inscrire
             </button>

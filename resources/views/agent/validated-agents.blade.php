@@ -8,10 +8,7 @@
     <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34,155);">Liste des Agents Validés</h1>
 @endsection
 
-{{-- Sous-titre du contenu --}}
-@section('sousTitreContenu')
-    <p class="text-center text-lg text-black">Voici la liste des agents dont l'inscription a été validée.</p>
-@endsection
+on
 
 {{-- Contenu principal de la page --}}
 @section('contenu')

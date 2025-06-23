@@ -1,3 +1,4 @@
+{{-- filepath: resources/views/chef/agents.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Liste des agents')
@@ -12,14 +13,14 @@
 
     <table class="table table-bordered">
         <thead>
-            <tr>
-                <th>Prénom</th>
-                <th>Nom</th>
-                <th>Direction</th>
-                <th>Division</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+    <tr>
+        <th style="background-color:#003366; color:#fff;">Prénom</th>
+        <th style="background-color:#003366; color:#fff;">Nom</th>
+        <th style="background-color:#003366; color:#fff;">Direction</th>
+        <th style="background-color:#003366; color:#fff;">Division</th>
+        <th style="background-color:#003366; color:#fff;">Actions</th>
+    </tr>
+</thead>
         <tbody>
             @forelse($agents as $agent)
                 <tr>
@@ -28,7 +29,7 @@
                     <td>{{ $agent->direction ?? '-' }}</td>
                     <td>{{ $agent->division ?? '-' }}</td>
                     <td>
-                        <a href="{{ route('chef.agent.stats', $agent->id) }}" class="btn btn-info btn-sm">Voir statistiques</a>
+                        <a href="{{ route('chef.agent.stats', $agent->id) }}" class="btn btn-info btn-sm" style="background:#003366; color:#fff;">Voir statistiques</a>
                     </td>
                 </tr>
             @empty

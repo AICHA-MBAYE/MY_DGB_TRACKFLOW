@@ -4,22 +4,13 @@
 @section('title', 'Changer votre mot de passe')
 
 {{-- Titre principal du contenu --}}
-@section('titreContenu')
-    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155);">Changer votre mot de passe</h1>
-@endsection
-
-{{-- Sous-titre du contenu --}}
-@section('sousTitreContenu')
-    <p class="text-center text-xl text-black">Veuillez définir un nouveau mot de passe pour votre compte.</p>
-@endsection
 
 {{-- Contenu principal du formulaire --}}
 @section('contenu')
 <div class="bg-white p-6 rounded shadow-md max-w-md mx-auto mt-10">
-    <p class="text-center text-gray-700 mb-6">
-        C'est votre première connexion. Pour des raisons de sécurité, veuillez changer votre mot de passe.
-    </p>
-
+   <p class="text-center mb-6" style="color: #003366;">
+    C'est votre première connexion. Pour des raisons de sécurité, veuillez changer votre mot de passe.
+</p>
     <form method="POST" action="{{ route('password.change') }}">
         @csrf
 
@@ -57,7 +48,7 @@
         <div class="flex items-center justify-between">
             <button
                 type="submit"
-                class="bg-blue-800 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                class="bg-blue-800 hover:bg-blue-900 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
             >
                 Changer le mot de passe
             </button>

@@ -28,7 +28,7 @@
     @else
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white rounded-lg shadow-md">
-                <thead>
+                <thead class="bg-blue-900 text-white">
                     <tr>
                         <th class="px-4 py-2">Agent</th>
                         <th class="px-4 py-2">Date début</th>

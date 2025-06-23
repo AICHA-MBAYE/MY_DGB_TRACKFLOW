@@ -1,23 +1,15 @@
+{{-- filepath: resources/views/welcome.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Accueil')
 
-@section('titreContenu')
-    <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Accueil</h1>
-@endsection
 
 @section('contenu')
-    <div class="text-center py-10">
-        <h1 class="text-4xl font-bold text-gray-800 mb-4" style="color: black;">Bienvenue dans MY_DGB_TRACKFLOW</h1>
-        <p class="text-lg text-gray-600 mb-8" style="color: black;">
-            Plateforme de gestion et de suivi des agents de la Direction Générale du Budget.
-        </p>
-    </div>
 
-    {{-- Affiche le formulaire de connexion si l'utilisateur n'est PAS connecté --}}
     @guest
-        <div class="flex flex-col items-center justify-center mt-4"> 
-        <div class="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+
+        <div class="flex flex-col items-center justify-center mt-4">
+            <div class="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
                 <h2 class="text-2xl font-bold text-center mb-6" style="color: rgb(34, 34, 155);">Connexion</h2>
 
                 <form method="POST" action="{{ route('login') }}">
@@ -56,7 +48,10 @@
                             </a>
                         @endif
 
-                        <button type="submit" class="ml-4 inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-900 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                        <button type="submit" class="ml-4 inline-flex items-center px-4 py-2"
+                            style="background:#fff; color:#003366; border:2px solid #003366; font-weight:600; border-radius:6px; transition:background 0.2s, color 0.2s;"
+                            onmouseover="this.style.background='#003366';this.style.color='#fff';"
+                            onmouseout="this.style.background='#fff';this.style.color='#003366';">
                             Se connecter
                         </button>
                     </div>
@@ -68,10 +63,15 @@
     {{-- Le contenu principal de la page pour les utilisateurs connectés pourrait aller ici si vous voulez --}}
     @auth
         <div class="text-center py-10">
-            <p class="text-lg text-gray-600" style="color: rgb(64, 113, 4);">
+            <p class="text-lg text-gray-600" style="color:#003366;">
                 Vous êtes connecté. Utilisez la barre de navigation ci-dessus pour accéder aux fonctionnalités.
             </p>
             {{-- Vous pouvez ajouter ici d'autres éléments spécifiques au tableau de bord pour les utilisateurs connectés sur la page d'accueil si vous le souhaitez --}}
         </div>
+       <div class="flex justify-center my-8">
+    <img src="{{ asset('images/welcomedgb.jpeg') }}" alt="DGB Sénégal"
+         class="rounded-lg shadow-lg w-full max-w-4xl h-auto"
+         style="max-height:300px;">
+</div>
     @endauth
 @endsection
