@@ -16,18 +16,18 @@ on
 
 <div class="bg-white p-6 rounded shadow-md max-w-7xl mx-auto">
     <div class="overflow-x-auto">
-        <table class="min-w-full border border-gray-300 rounded shadow">
+        <table class="min-w-full border border-gray-300 rounded shadow mx-auto">
             <thead class="bg-blue-900 text-white">
                 <tr>
-                    <th class="px-4 py-2 border">Prénom</th>
-                    <th class="px-4 py-2 border">Nom</th>
-                    <th class="px-4 py-2 border">Email</th>
-                    <th class="px-4 py-2 border">Rôle</th>
-                    <th class="px-4 py-2 border">Direction</th>
-                    <th class="px-4 py-2 border">Division</th>
+                    <th class="px-4 py-2 border" style="background-color:#003366; color:#fff;" >Prénom</th>
+                    <th class="px-4 py-2 border" style="background-color:#003366; color:#fff;">Nom</th>
+                    <th class="px-4 py-2 border" style="background-color:#003366; color:#fff;">Email</th>
+                    <th class="px-4 py-2 border" style="background-color:#003366; color:#fff;">Rôle</th>
+                    <th class="px-4 py-2 border" style="background-color:#003366; color:#fff;">Direction</th>
+                    <th class="px-4 py-2 border" style="background-color:#003366; color:#fff;">Division</th>
                     {{-- La colonne Actions est affichée uniquement si l'utilisateur connecté est super_admin ou admin_sectoriel --}}
                     @if (in_array(Auth::user()->role, ['super_admin', 'admin_sectoriel']))
-                        <th class="px-4 py-2 border w-1/5">Actions</th>
+                        <th class="px-4 py-2 border w-1/5" style="background-color:#003366; color:#fff;" >Actions</th>
                     @endif
                 </tr>
             </thead>

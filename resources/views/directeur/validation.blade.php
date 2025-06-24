@@ -27,16 +27,16 @@
         </div>
     @else
     <div class="overflow-x-auto">
-        <table class="min-w-full bg-white rounded-lg shadow-md">
+        <table class="min-w-full bg-white rounded shadow mx-auto">
             <thead>
                 <tr>
-                    <th class="px-4 py-2">Agent</th>
-                    <th class="px-4 py-2">Date début</th>
-                    <th class="px-4 py-2">Date fin</th>
-                    <th class="px-4 py-2">Motif</th>
-                    <th class="px-4 py-2">Justificatif</th>
-                    <th class="px-4 py-2">Statut Chef</th>
-                    <th class="px-4 py-2">Action</th>
+                    <th class="px-4 py-2" style="background-color:#003366; color:#fff;">Agent</th>
+                    <th class="px-4 py-2" style="background-color:#003366; color:#fff;">Date début</th>
+                    <th class="px-4 py-2" style="background-color:#003366; color:#fff;">Date fin</th>
+                    <th class="px-4 py-2" style="background-color:#003366; color:#fff;">Motif</th>
+                    <th class="px-4 py-2" style="background-color:#003366; color:#fff;">Justificatif</th>
+                    <th class="px-4 py-2" style="background-color:#003366; color:#fff;">Statut Chef</th>
+                    <th class="px-4 py-2" style="background-color:#003366; color:#fff;">Action</th>
                 </tr>
             </thead>
             <tbody>

@@ -19,19 +19,19 @@
 
 <div class="bg-white p-6 rounded shadow-md max-w-7xl mx-auto">
     <div class="overflow-x-auto">
-        <table class="min-w-full border border-gray-300 rounded shadow">
+        <table class="min-w-full border border-gray-300 rounded shadow mx-auto">
             {{-- En-tête du tableau --}}
             <thead class="bg-blue-900 text-white">
                 <tr>
                     
-                    <th class="px-4 py-2 border">Prénom</th>
-                    <th class="px-4 py-2 border">Nom</th>
-                    <th class="px-4 py-2 border">Email</th>
-                    <th class="px-4 py-2 border">Direction</th>
-                    <th class="px-4 py-2 border">Division</th>
-                    <th class="px-4 py-2 border">Rôle</th>
-                    <th class="px-4 py-2 border">Statut</th>
-                    <th class="px-4 py-2 border w-1/4">Actions d'Administration</th>
+                    <th class="px-4 py-2 border" style="background-color:#003366; color:#fff;" >Prénom</th>
+                    <th class="px-4 py-2 border" style="background-color:#003366; color:#fff;" >Nom</th>
+                    <th class="px-4 py-2 border" style="background-color:#003366; color:#fff;" >Email</th>
+                    <th class="px-4 py-2 border" style="background-color:#003366; color:#fff;" >Direction</th>
+                    <th class="px-4 py-2 border" style="background-color:#003366; color:#fff;" >Division</th>
+                    <th class="px-4 py-2 border" style="background-color:#003366; color:#fff;" >Rôle</th>
+                    <th class="px-4 py-2 border" style="background-color:#003366; color:#fff;" >Statut</th>
+                    <th class="px-4 py-2 border w-1/4" style="background-color:#003366; color:#fff;" >Actions d'Administration</th>
                 </tr>
             </thead>
             {{-- Corps du tableau --}}

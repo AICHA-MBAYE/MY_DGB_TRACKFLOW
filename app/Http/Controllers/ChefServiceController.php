@@ -29,37 +29,39 @@ class ChefServiceController extends Controller
     }
 
     public function agentStats($id, Request $request)
-    {
-        $agent = Agent::findOrFail($id);
+{
+    $agent = Agent::findOrFail($id);
 
-        // Vérifie que l'agent appartient à la division du chef
-        if ($agent->division !== auth()->user()->division) {
-            abort(403, "Accès refusé.");
-        }
+    // Vérifie que l'agent appartient à la division du chef
+    if ($agent->division !== auth()->user()->division) {
+        abort(403, "Accès refusé.");
+    }
 
-        $annee = $request->input('annee', now()->year);
-        $annees = range(2025, now()->year);
+    $annee = $request->input('annee', now()->year);
+    $annees = range(2025, now()->year);
 
-        $demandes = DemandeAbsence::where('user_id', $agent->id)
-            ->whereYear('date_debut', $annee)
-            ->get();
+    // Ne prendre que les demandes acceptées
+    $demandes = DemandeAbsence::where('user_id', $agent->id)
+        ->whereYear('date_debut', $annee)
+        ->where('etat_directeur', 'acceptée') // <-- Ajout du filtre
+        ->get();
 
-        $stats = [];
-        foreach (range(1, 12) as $mois) {
-            $duMois = $demandes->filter(function($d) use ($mois) {
-                return \Carbon\Carbon::parse($d->date_debut)->month == $mois;
-            });
-            $stats[$mois] = [
-                'nb_jours' => $duMois->sum('jours_ouvres'),
-                'nb_demandes' => $duMois->count(),
-            ];
-        }
+    $stats = [];
+    foreach (range(1, 12) as $mois) {
+        $duMois = $demandes->filter(function($d) use ($mois) {
+            return \Carbon\Carbon::parse($d->date_debut)->month == $mois;
+        });
+        $stats[$mois] = [
+            'nb_jours' => $duMois->sum('jours_ouvres'),
+            'nb_demandes' => $duMois->count(),
+        ];
+    }
 
-        return view('demande_absence.stats', [
-            'agent' => $agent,
-            'annee' => $annee,
-            'annees' => $annees,
-            'stats' => $stats,
-        ]);
+    return view('demande_absence.stats', [
+        'agent' => $agent,
+        'annee' => $annee,
+        'annees' => $annees,
+        'stats' => $stats,
+    ]);
     }
 }

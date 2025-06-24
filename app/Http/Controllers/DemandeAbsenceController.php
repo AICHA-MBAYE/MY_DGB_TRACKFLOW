@@ -102,16 +102,18 @@ public function index()
        return redirect()->route('demande_absence.index')->with('success', 'Demande envoyée avec succès.');
 
     }
-    public function stats(Request $request)
+
+public function stats(Request $request)
 {
-     $userId = auth()->id();
+    $userId = auth()->id();
     $annee = $request->input('annee', now()->year);
 
- $annees = range(2025, now()->year);
+    $annees = range(2025, now()->year);
 
-    // Nombre de jours ouvrés et de demandes par mois pour l'année sélectionnée
+    // Ne prendre que les demandes acceptées
     $demandes = DemandeAbsence::where('user_id', $userId)
         ->whereYear('date_debut', $annee)
+        ->where('etat_directeur', 'acceptée') // <-- Ajout du filtre
         ->get();
 
     $stats = [];
