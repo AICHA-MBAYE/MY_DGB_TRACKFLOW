@@ -6,6 +6,8 @@ use App\Models\DemandeAbsence;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\ValidationHistorique;
+use Carbon\Carbon;
 
 class ValidationChefController extends Controller
 {
@@ -39,8 +41,8 @@ public function traiter(Request $request, $id) {
     $demande->etat_chef = $request->input('action');
     if ($request->input('action') === 'rejetée') {
         $demande->motif_rejet_chef = $request->input('motif_rejet_chef');
-   $demande->etat_directeur = 'rejetée';
-        $demande->motif_rejet_directeur = 'Rejet automatique suite au refus du chef de service (' . $request->input('motif_rejet_chef') . ')';
+   $demande->etat_directeur = 'en_attente';
+        $demande->motif_rejet_directeur = 'Rejet  suite au refus du chef de service ';
     } else {
         $demande->motif_rejet_chef = null;
     }
@@ -54,7 +56,16 @@ $pdf = Pdf::loadView('acte_administratif', [
 $pdfPath = 'actes/acte_'.$demande->id.'.pdf';
 $pdf->save(storage_path('app/'.$pdfPath));
 $demande->pdf_path = $pdfPath;
+$demande->date_traitement_chef = now(); // lors de la validation par le chef
 $demande->save();
+
+ValidationHistorique::create([
+    'demande_absence_id' => $demande->id,
+    'user_id' => $agent->id,
+    'role' => 'chef_service', // ou 'chef_service' selon ta logique
+    'action' => $demande->etat_chef, // 'acceptée' ou 'rejetée'
+    'validated_at' => Carbon::now(),
+]);
 
     return redirect()->route('chef.validation')->with('success', 'Demande traitée');
 }

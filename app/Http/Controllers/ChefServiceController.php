@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Agent;
 use App\Models\DemandeAbsence;
+use App\Models\ValidationHistorique;
 
 class ChefServiceController extends Controller
 {
@@ -64,4 +65,13 @@ class ChefServiceController extends Controller
         'stats' => $stats,
     ]);
     }
+    public function historiqueValidations(Request $request)
+{
+    $historique = ValidationHistorique::where('role', 'chef_service')
+        ->orderBy('validated_at', 'desc')
+        ->with(['demande', 'user'])
+        ->get();
+
+    return view('chef.historique', compact('historique'));
+}
 }

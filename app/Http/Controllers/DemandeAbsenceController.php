@@ -138,4 +138,19 @@ public function submit($id)
 
     return redirect()->route('demande_absence.index')->with('success', 'Demande soumise avec succès.');
 }
+public function show($id){
+    $demande = DemandeAbsence::findOrFail($id);
+
+    // Exemple simple : tu peux adapter selon ta logique d'authentification/autorisation
+    $user = auth()->user();
+    if ($user && $user->role === 'directeur') {
+        $retour = route('directeur.historique');
+    } elseif ($user && $user->role === 'chef_service') {
+        $retour = route('chef.historique');
+    } else {
+        $retour = route('demande_absence.index');
+    }
+
+    return view('demande_absence.show', compact('demande', 'retour'));
+}
 }

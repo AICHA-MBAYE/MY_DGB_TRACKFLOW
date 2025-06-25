@@ -10,6 +10,7 @@
 
     <link rel="preconnect" href="https://fonts.bunny.net" />
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -153,30 +154,64 @@
             </a>
         </div>
         <div class="nav-right-buttons">
+    @auth
+        @if (!Route::is('password.force_change'))
+            @if (Auth::user()->role === 'agent')
+                <a href="{{ route('demande_absence.create') }}"
+                   @if(Route::is('demande_absence.create')) style="background:#00509e; color:#fff !important;" @endif>
+                   Demande d'absence
+                </a>
+                <a href="{{ route('demande_absence.index') }}"
+                   @if(Route::is('demande_absence.index')) style="background:#00509e; color:#fff !important;" @endif>
+                   Liste des absences
+                </a>
+            @endif
+            @if (Auth::user()->role === 'chef_service')
+                <a href="{{ route('agent.validated_index') }}"
+                   @if(Route::is('agent.validated_index')) style="background:#00509e; color:#fff !important;" @endif>
+                   Agents Validés
+                </a>
+                <a href="{{ route('chef.validation') }}"
+                   @if(Route::is('chef.validation')) style="background:#00509e; color:#fff !important;" @endif>
+                   Validation
+                </a>
+                <a href="{{ route('chef.agents') }}"
+                   @if(Route::is('chef.agents')) style="background:#00509e; color:#fff !important;" @endif>
+                   Statistiques
+                </a>
+                <a href="{{ route('chef.historique') }}"
+                   @if(Route::is('chef.historique')) style="background:#00509e; color:#fff !important;" @endif>
+                   Historique des Validations
+                </a>
+            @endif
+            @if (Auth::user()->role === 'directeur')
+                <a href="{{ route('agent.validated_index') }}"
+                   @if(Route::is('agent.validated_index')) style="background:#00509e; color:#fff !important;" @endif>
+                   Agents Validés
+                </a>
+                <a href="{{ route('directeur.validation') }}"
+                   @if(Route::is('directeur.validation')) style="background:#00509e; color:#fff !important;" @endif>
+                   Validation
+                </a>
+                <a href="{{ route('directeur.historique') }}"
+                   @if(Route::is('directeur.historique')) style="background:#00509e; color:#fff !important;" @endif>
+                   Historique des Validations
+                </a>
+            @endif
+            @if (in_array(Auth::user()->role, ['admin_sectoriel', 'super_admin']))
+                <a href="{{ route('agent.index') }}"
+                   @if(Route::is('agent.index')) style="background:#00509e; color:#fff !important;" @endif>
+                   Gestion des Agents
+                </a>
+                <a href="{{ route('agent.validated_index') }}"
+                   @if(Route::is('agent.validated_index')) style="background:#00509e; color:#fff !important;" @endif>
+                   Agents Validés
+                </a>
+            @endif
+        @endif
+    @endauth
+</div>
 
-
-            @auth
-                @if (!Route::is('password.force_change'))
-                    @if (Auth::user()->role === 'agent')
-                        <a href="{{ route('demande_absence.create') }}">Demande d'absence</a>
-                        <a href="{{ route('demande_absence.index') }}">Liste des absences</a>
-                    @endif
-                    @if (Auth::user()->role === 'chef_service')
-                        <a href="{{ route('agent.validated_index') }}">Agents Validés</a>
-                        <a href="{{ route('chef.validation') }}">Validation</a>
-                        <a href="{{ route('chef.agents') }}">Statistiques</a>
-                    @endif
-                    @if (Auth::user()->role === 'directeur')
-                        <a href="{{ route('agent.validated_index') }}">Agents Validés</a>
-                        <a href="{{ route('directeur.validation') }}">Validation</a>
-                    @endif
-                    @if (in_array(Auth::user()->role, ['admin_sectoriel', 'super_admin']))
-                        <a href="{{ route('agent.index') }}">Gestion des Agents</a>
-                        <a href="{{ route('agent.validated_index') }}">Agents Validés</a>
-                    @endif
-                @endif
-            @endauth
-        </div>
         <div class="nav-right-buttons">
             @guest
                 @if (!Route::is('login'))

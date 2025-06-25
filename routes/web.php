@@ -5,6 +5,12 @@ use App\Http\Controllers\AgentController;
 use App\Http\Controllers\DemandeAbsenceController;
 use App\Http\Controllers\Auth\ForcePasswordChangeController; // NOUVEAU : Importe le contrôleur pour le changement de mot de passe forcé
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChefServiceController;
+use App\Http\Controllers\ValidationDirecteurController;
+use App\Http\Controllers\ValidationChefController;
+use App\Models\DemandeAbsence;
+use App\Models\ValidationHistorique;
+use App\Models\Agent;
 // use Livewire\Volt\Volt; // Commenté car non utilisé pour les routes listées ici
 use Illuminate\Support\Facades\Hash;
 
@@ -17,7 +23,8 @@ Route::get('/generate-password-hash', function () {
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
-
+Route::get('/chef/historique', [ChefServiceController::class, 'historiqueValidations'])->name('chef.historique');
+Route::get('/directeur/historique', [ValidationDirecteurController::class, 'historiqueValidations'])->name('directeur.historique');
 // Routes d'inscription d'agent initiale (accessibles sans être connecté)
 Route::get('/register-agent', [AgentController::class, 'create'])->name('agent.register');
 Route::post('/agents', [AgentController::class, 'store'])->name('agent.store');
@@ -29,17 +36,13 @@ Route::get('/demande-absence/statistiques', [\App\Http\Controllers\DemandeAbsenc
 // Routes pour la modification d'inscription rejetée (accessibles sans être connecté)
 Route::get('/inscription-rejetee/{agent}/modifier', [AgentController::class, 'editRejectedForm'])->name('agent.edit_rejected_form');
 Route::post('/inscription-rejetee/{agent}/mettre-a-jour', [AgentController::class, 'updateRejectedRegistration'])->name('agent.update_rejected_registration');
-
+Route::get('/demande_absence/{id}', [DemandeAbsenceController::class, 'show'])->name('demande_absence.show');
 // Dashboard (authentifié et vérifié)
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
-// NOUVEAU : Routes pour le changement de mot de passe forcé à la première connexion
-// Ces routes DOIVENT être protégées par 'auth' pour s'assurer que seul un utilisateur connecté peut y accéder,
-// mais elles NE DOIVENT PAS être affectées par le middleware ForcePasswordChange lui-même,
-// car c'est la destination de la redirection de ce middleware pour éviter une boucle.
 Route::middleware('auth')->group(function () {
     Route::get('/password/force-change', [ForcePasswordChangeController::class, 'showChangePasswordForm'])->name('password.force_change');
     Route::post('/password/force-change', [ForcePasswordChangeController::class, 'changePassword'])->name('password.change'); // Le nom 'password.change' est utilisé dans le formulaire
@@ -54,12 +57,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/agents/validated', [AgentController::class, 'validatedIndex'])->name('agent.validated_index');
-    
+
 
     Route::get('/password/change', [AgentController::class, 'showChangePasswordForm'])->name('password.change.form');
     Route::post('/password/change', [AgentController::class, 'changePassword'])->name('password.change');
 
-    
+
     // Routes pour la gestion des agents
     // Utilisez la ressource pour les opérations CRUD standards (index, show, edit, update, destroy)
     // Laravel génère les noms de route comme 'agent.index', 'agent.store', 'agent.edit', etc.

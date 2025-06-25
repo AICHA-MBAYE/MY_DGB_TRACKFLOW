@@ -19,7 +19,7 @@
         <form action="{{ route('demande_absence.store') }}" method="POST" enctype="multipart/form-data" class="stylish-form" style="max-width: 600px; margin: 0 auto;">
             @csrf
 
-            <h5 class="mb-3 text-center" style="color:#003366;">Nouvelle demande d'absence</h5>
+            <h5 class="mb-3 text-center" style="color:#003366;"> demande/justificatif d'absence</h5>
 
             <div class="mb-3">
                 <label for="date_debut" class="form-label">Date de début</label>
