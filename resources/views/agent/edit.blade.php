@@ -1,37 +1,82 @@
 @extends('layouts.app')
 
-{{-- Titre de la page --}}
-@section('title', 'Modification')
+{{-- Le titre de la page affiché dans le navigateur --}}
+@section('title', 'Modification Agent')
 
-{{-- Titre principal du contenu --}}
+{{-- Titre principal du contenu affiché sur la page --}}
 @section('titreContenu')
     <h1 class="text-center text-3xl font-bold" style="color: rgb(34, 34, 155)">Modifier un agent</h1>
 @endsection
 
+{{-- Contenu principal du formulaire de modification --}}
 @section('contenu')
 <div class="bg-white p-6 rounded shadow-md max-w-3xl mx-auto">
+    {{-- Formulaire de modification --}}
     <form action="{{ route('agent.update', $agent) }}" method="POST" novalidate>
         @csrf
         @method('put')
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Champ Prénom -->
             <div>
                 <label for="prenom" class="block text-gray-700 font-semibold mb-2">Prénom</label>
-                <input id="prenom" name="prenom" type="text" required value="{{ old('prenom', $agent->prenom) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('prenom') border-red-600 @enderror" style="color: black;">
-                @error('prenom')<p class="text-red-600 mt-1 text-sm">{{ $message }}</p>@enderror
+                <input
+                    id="prenom"
+                    name="prenom"
+                    type="text"
+                    required
+                    value="{{ old('prenom', $agent->prenom) }}"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('prenom') border-red-600 @enderror"
+                    style="color: black;"
+                >
+                @error('prenom')
+                    <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
+                @enderror
             </div>
+
+            <!-- Champ Nom -->
             <div>
                 <label for="nom" class="block text-gray-700 font-semibold mb-2">Nom</label>
-                <input id="nom" name="nom" type="text" required value="{{ old('nom', $agent->nom) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('nom') border-red-600 @enderror" style="color: black;">
-                @error('nom')<p class="text-red-600 mt-1 text-sm">{{ $message }}</p>@enderror
+                <input
+                    id="nom"
+                    name="nom"
+                    type="text"
+                    required
+                    value="{{ old('nom', $agent->nom) }}"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('nom') border-red-600 @enderror"
+                    style="color: black;"
+                >
+                @error('nom')
+                    <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
+                @enderror
             </div>
+
+            <!-- Champ Email -->
             <div class="md:col-span-2">
                 <label for="email" class="block text-gray-700 font-semibold mb-2">Email</label>
-                <input id="email" name="email" type="email" required value="{{ old('email', $agent->email) }}" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('email') border-red-600 @enderror" style="color: black;">
-                @error('email')<p class="text-red-600 mt-1 text-sm">{{ $message }}</p>@enderror
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value="{{ old('email', $agent->email) }}"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('email') border-red-600 @enderror"
+                    style="color: black;"
+                >
+                @error('email')
+                    <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
+                @enderror
             </div>
+
+            <!-- Liste déroulante Direction -->
             <div class="md:col-span-2">
                 <label for="direction" class="block text-gray-700 font-semibold mb-2">Direction</label>
-                <select id="direction" name="direction" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('direction') border-red-600 @enderror" style="color: black;">
+                <select
+                    id="direction"
+                    name="direction"
+                    required
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('direction') border-red-600 @enderror"
+                    style="color: black;">
                     <option value="">-- Sélectionnez une direction --</option>
                     <option value="DAP" {{ old('direction', $agent->direction) == 'DAP' ? 'selected' : '' }}>Direction de l'Administration et du Personnel (DAP)</option>
                     <option value="DCI" {{ old('direction', $agent->direction) == 'DCI' ? 'selected' : '' }}>Direction du Contrôle Interne (DCI)</option>
@@ -45,47 +90,74 @@
                     <option value="CSS" {{ old('direction', $agent->direction) == 'CSS' ? 'selected' : '' }}>Cellule de Suivi et de Synthèse (CSS)</option>
                     <option value="CER" {{ old('direction', $agent->direction) == 'CER' ? 'selected' : '' }}>Cellule des Études et de la Réglementation (CER)</option>
                 </select>
-                @error('direction')<p class="text-red-600 mt-1 text-sm">{{ $message }}</p>@enderror
+                @error('direction')
+                    <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
+                @enderror
             </div>
+
+            <!-- Liste déroulante Division -->
             <div class="md:col-span-2">
                 <label for="division" class="block text-gray-700 font-semibold mb-2">Division</label>
-                <select id="division" name="division" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('division') border-red-600 @enderror" style="color: black;">
+                <select
+                    id="division"
+                    name="division"
+                    required
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('division') border-red-600 @enderror"
+                    style="color: black;"
+                    >
                     <option value="">-- Sélectionnez une division --</option>
                 </select>
-                @error('division')<p class="text-red-600 mt-1 text-sm">{{ $message }}</p>@enderror
+                @error('division')
+                    <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
+                @enderror
             </div>
+
+            <!-- Liste déroulante Rôle -->
             <div class="md:col-span-2">
-                <label for="agent-role" class="block text-gray-700 font-semibold mb-2">Rôle</label>
-                <select name="role" id="agent-role" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('role') border-red-600 @enderror" required>
+                <label for="role" class="block text-gray-700 font-semibold mb-2">Rôle</label>
+                <select
+                    id="role"
+                    name="role"
+                    required
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600 @error('role') border-red-600 @enderror"
+                    style="color: black;">
                     <option value="">-- Choisissez un rôle --</option>
                     @if(auth()->user()->role === 'super_admin')
-                        <option value="super_admin" {{ old('role', $agent->role) === 'super_admin' ? 'selected' : '' }}>Super-administrateur</option>
-                        <option value="admin_sectoriel" {{ old('role', $agent->role) === 'admin_sectoriel' ? 'selected' : '' }}>Administrateur sectoriel</option>
-                        <option value="directeur" {{ old('role', $agent->role) === 'directeur' ? 'selected' : '' }}>Directeur</option>
-                        <option value="chef_service" {{ old('role', $agent->role) === 'chef_service' ? 'selected' : '' }}>Chef de service</option>
-                        <option value="agent" {{ old('role', $agent->role) === 'agent' ? 'selected' : '' }}>Agent</option>
+                        <option value="super_admin" {{ old('role', $agent->role) == 'super_admin' ? 'selected' : '' }}>Super administrateur</option>
+                        <option value="admin_sectoriel" {{ old('role', $agent->role) == 'admin_sectoriel' ? 'selected' : '' }}>Administrateur sectoriel</option>
+                        <option value="directeur" {{ old('role', $agent->role) == 'directeur' ? 'selected' : '' }}>Directeur</option>
+                        <option value="chef_service" {{ old('role', $agent->role) == 'chef_service' ? 'selected' : '' }}>Chef de service</option>
+                        <option value="agent" {{ old('role', $agent->role) == 'agent' ? 'selected' : '' }}>Agent</option>
                     @else
-                        <option value="directeur" {{ old('role', $agent->role) === 'directeur' ? 'selected' : '' }}>Directeur</option>
-                        <option value="chef_service" {{ old('role', $agent->role) === 'chef_service' ? 'selected' : '' }}>Chef de service</option>
-                        <option value="agent" {{ old('role', $agent->role) === 'agent' ? 'selected' : '' }}>Agent</option>
+                        <option value="directeur" {{ old('role', $agent->role) == 'directeur' ? 'selected' : '' }}>Directeur</option>
+                        <option value="chef_service" {{ old('role', $agent->role) == 'chef_service' ? 'selected' : '' }}>Chef de service</option>
+                        <option value="agent" {{ old('role', $agent->role) == 'agent' ? 'selected' : '' }}>Agent</option>
                     @endif
                 </select>
-                @error('role')<p class="text-red-600 mt-1 text-sm">{{ $message }}</p>@enderror
+                @error('role')
+                    <p class="text-red-600 mt-1 text-sm">{{ $message }}</p>
+                @enderror
             </div>
         </div>
+
+        {{-- Bouton d'enregistrement --}}
         <div class="mt-6 text-right">
-            <button type="submit" class="bg-blue-800 text-white px-6 py-2 rounded hover:bg-blue-900 transition">Enregistrer</button>
+            <button
+                type="submit"
+                class="bg-blue-800 text-black px-6 py-2 rounded hover:bg-blue-900 transition"
+            >
+                Enregistrer
+            </button>
         </div>
     </form>
 </div>
 
-@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const directionSelect = document.getElementById('direction');
         const divisionSelect = document.getElementById('division');
 
-        // Mappage des directions aux divisions (assurez-vous que tous les codes de direction sont présents)
+        // Mappage des directions aux divisions
         const DIRECTIONS_AND_DIVISIONS = {
             "DPB": {
                 "DS": "Division de la synthèse",
@@ -188,8 +260,8 @@
         }
 
         directionSelect.addEventListener('change', populateDivisions);
-        // Call on page load to populate initial divisions if a direction is already selected
-        populateDivisions(); 
+        // Appelle la fonction au chargement pour préremplir si besoin
+        populateDivisions();
     });
 </script>
-@endpush
+@endsection
