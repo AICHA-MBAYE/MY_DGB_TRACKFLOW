@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agent;
+use App\Models\ValidationHistorique; // Importez le nouveau modèle
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Validation\Rule;
@@ -12,17 +13,12 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\AgentValidatedMail;
 use App\Mail\AgentRejectedMail;
 use Illuminate\Support\Facades\Auth;
-use App\Models\DemandeAbsence; // Assurez-vous que ce modèle est bien utilisé dans downloadActe si c'est le cas.
+use App\Models\DemandeAbsence;
 
 class AgentController extends Controller
 {
     use ValidatesRequests;
 
-    /**
-     * Méthode d'aide pour filtrer les agents par direction pour des rôles spécifiques.
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     protected function filterAgentsByDirection($query)
     {
         $user = Auth::user();
@@ -32,11 +28,6 @@ class AgentController extends Controller
         return $query;
     }
 
-    /**
-     * Méthode d'aide pour filtrer les agents par division pour des rôles spécifiques.
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     protected function filterAgentsByDivision($query)
     {
         $user = Auth::user();
@@ -46,20 +37,15 @@ class AgentController extends Controller
         return $query;
     }
 
-    /**
-     * Affiche la liste de tous les agents (pour l'administration, inclut les en attente).
-     * Filtré par direction pour admin_sectoriel et par division pour chef_service.
-     *
-     * @return \Illuminate\View\View
-     */
     public function index()
     {
         $query = Agent::where('status', 'pending');
 
-        if (Auth::user()->role === 'admin_sectoriel') {
+        if (Auth::user()->role === 'super_admin') {
+            // Un super administrateur voit tous les agents en attente
+        } elseif (Auth::user()->role === 'admin_sectoriel') {
             $query = $this->filterAgentsByDirection($query);
-        }
-        if (Auth::user()->role === 'chef_service') {
+        } elseif (Auth::user()->role === 'chef_service') {
             $query = $this->filterAgentsByDivision($query);
         }
         
@@ -67,16 +53,10 @@ class AgentController extends Controller
         return view('agent.index', compact('agents'));
     }
 
-    /**
-     * Affiche la liste uniquement des agents validés.
-     * Filtré par direction pour chef_service et directeur, et exclut super_admin pour admin_sectoriel.
-     *
-     * @return \Illuminate\View\View
-     */
     public function validatedIndex()
     {
         $query = Agent::where('status', 'validated');
-        $user = Auth::user(); // Obtenir l'utilisateur authentifié une seule fois
+        $user = Auth::user();
 
         if (in_array($user->role, ['chef_service', 'directeur', 'admin_sectoriel'])) {
              $query = $this->filterAgentsByDirection($query);
@@ -84,36 +64,35 @@ class AgentController extends Controller
         if ($user->role === 'chef_service') {
             $query = $this->filterAgentsByDivision($query);
         }
-        // Exclure les super administrateurs pour les admin sectoriels
         if ($user->role === 'admin_sectoriel') {
             $query->where('role', '!=', 'super_admin');
         }
-        // NOUVEAU : Exclure super_admin et admin_sectoriel pour les directeurs
         if ($user->role === 'directeur') {
             $query->whereNotIn('role', ['super_admin', 'admin_sectoriel']);
+        }
+
+        // Ajout du filtre de recherche global
+        if (request('search')) {
+            $search = trim(request('search'));
+            $query->where(function($q) use ($search) {
+                $q->where('prenom', 'like', "%$search%")
+                  ->orWhere('nom', 'like', "%$search%")
+                  ->orWhere('division', 'like', "%$search%")
+                  ->orWhere('direction', 'like', "%$search%")
+                  ->orWhere('role', 'like', "%$search%")
+                ;
+            });
         }
 
         $agents = $query->get();
         return view('agent.validated-agents', compact('agents'));
     }
 
-    /**
-     * Affiche le formulaire pour créer un nouvel agent (page d'inscription).
-     *
-     * @return \Illuminate\View\View
-     */
     public function create()
     {
         return view('auth.register-agent');
     }
 
-    /**
-     * Enregistre un nouvel agent (inscription) dans la base de données.
-     * Le rôle sera null (assigné par l'admin), le statut 'pending'.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -141,13 +120,6 @@ class AgentController extends Controller
         return redirect()->route('welcome')->with('success', 'Cher agent, votre inscription a bien été enregistrée. Pour accéder à l\'application, vous devez être approuvé par votre administrateur sectoriel. Veuillez vérifier vos mails pour suivre la suite de votre procédure.');
     }
 
-    /**
-     * Affiche la ressource spécifiée.
-     * Ajout d'une vérification d'autorisation pour les agents d'une direction spécifique.
-     *
-     * @param  \App\Models\Agent  $agent
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
-     */
     public function show(Agent $agent)
     {
         $user = Auth::user();
@@ -157,16 +129,55 @@ class AgentController extends Controller
         if (in_array($user->role, ['admin_sectoriel', 'chef_service', 'directeur']) && $agent->direction !== $user->direction) {
             return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à voir les détails de cet agent car il ne fait pas partie de votre direction.');
         }
-        return view('agent.show', compact('agent'));
+        return view('agent.details', compact('agent'));
     }
 
     /**
-     * Affiche le formulaire pour éditer la ressource spécifiée.
-     * Restriction: admin_sectoriel ne peut éditer que les agents de sa direction.
+     * Affiche les détails d'un agent validé.
+     * Accessible uniquement si l'agent a le statut 'validated' et selon les droits de l'utilisateur.
      *
      * @param  \App\Models\Agent  $agent
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
+    public function validatedDetails(Agent $agent)
+    {
+        $user = Auth::user();
+        
+        // Seuls les agents validés sont accessibles ici
+        if ($agent->status !== 'validated') {
+            return redirect()->route('agent.validated_index')->with('error', "Cet agent n'est pas validé.");
+        }
+        // Les admin_sectoriel, chef_service, directeur ne voient que les agents de leur direction
+        if (in_array($user->role, ['admin_sectoriel', 'chef_service', 'directeur']) && $agent->direction !== $user->direction) {
+            return redirect()->route('agent.validated_index')->with('error', "Vous n'êtes pas autorisé à voir les détails de cet agent.");
+        }
+        // Les chef_service ne voient que les agents de leur division
+        if ($user->role === 'chef_service' && $agent->division !== $user->division) {
+            return redirect()->route('agent.validated_index')->with('error', "Vous n'êtes pas autorisé à voir les détails de cet agent.");
+        }
+        // Les agents ne peuvent voir que leurs propres infos
+        if ($user->role === 'agent' && $user->id !== $agent->id) {
+            return redirect()->route('agent.validated_index')->with('error', "Vous n'êtes pas autorisé à voir les détails de cet agent.");
+        }
+
+        // Récupérer la dernière entrée de validation pour cet agent, avec l'agent validateur
+        $validationEntry = ValidationHistorique::where('agent_id', $agent->id)
+                                              ->where('action', 'validated') // C'EST LA CLEF : doit correspondre à ce qui est enregistré
+                                              ->latest('validated_at')
+                                              ->with('validator') // Charger la relation 'validator' pour obtenir les détails de l'agent
+                                              ->first();
+        
+        // Initialiser validatorAgent à null, puis l'assigner si validationEntry existe et a un validateur
+        $validatorAgent = null;
+        if ($validationEntry && $validationEntry->validator) {
+            $validatorAgent = $validationEntry->validator;
+        }
+
+        // Passage de l'objet Agent et de l'objet validationEntry (qui contient la relation validator) à la vue
+        return view('agent.validated-details', compact('agent', 'validationEntry', 'validatorAgent'));
+    }
+
+
     public function edit(Agent $agent)
     {
         $user = Auth::user();
@@ -177,14 +188,6 @@ class AgentController extends Controller
         return view('agent.edit', compact('agent'));
     }
 
-    /**
-     * Met à jour la ressource spécifiée dans la base de données.
-     * Restriction: admin_sectoriel ne peut mettre à jour que les agents de sa direction.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Agent  $agent
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function update(Request $request, Agent $agent)
     {
         $user = Auth::user();
@@ -209,7 +212,7 @@ class AgentController extends Controller
             ],
             'direction' => [
                 'required',
-                Rule::in(['DAP', 'DCI', 'DSI', 'DPB', 'DCB', 'DORDP', 'DS', 'DP', 'DMTA', 'CSS', 'CER'])
+                Rule::in(['DAP', 'DCI', 'DSI', 'DPB', 'DCB', 'DODP', 'DS', 'DP', 'DMTA', 'CSS', 'CER'])
             ],
             'division' => 'nullable|string|max:255', 
         ]);
@@ -228,8 +231,7 @@ class AgentController extends Controller
 
     /**
      * Valide l'inscription d'un agent, lui attribue un mot de passe et un rôle.
-     * Restriction: admin_sectoriel ne peut valider que les agents de sa direction
-     * et ne peut pas attribuer les rôles super_admin ou admin_sectoriel.
+     * Lors de la validation, une entrée est créée dans validation_historiques.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Agent  $agent
@@ -239,7 +241,6 @@ class AgentController extends Controller
     {
         $user = Auth::user();
 
-        // Vérification d'autorisation : seuls les super_admin et admin_sectoriel peuvent valider et assigner un mot de passe
         if (!in_array($user->role, ['super_admin', 'admin_sectoriel'])) {
             return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à valider des agents ou à leur assigner des rôles.');
         }
@@ -249,7 +250,10 @@ class AgentController extends Controller
         }
 
         if ($agent->status !== 'pending') {
-            return redirect()->back()->with('error', 'L\'agent n\'est pas en statut "en attente". Impossible de valider.');
+            if ($agent->status === 'validated') {
+                return redirect()->route('agent.validatedDetails', $agent)->with('success', 'Agent déjà validé.'); // Redirige vers la page de détails validés
+            }
+            return redirect()->back()->with('error', 'Impossible de valider cet agent.');
         }
 
         $rules = [
@@ -266,21 +270,29 @@ class AgentController extends Controller
 
         $generatedPassword = Str::random(12);
 
-        // Préparer les données pour la mise à jour
         $updateData = [
             'password' => Hash::make($generatedPassword),
             'status' => 'validated',
-            'role' => $request->role_to_assign, // Attribution du rôle
-            'must_change_password' => true, // Force le changement de mot de passe à la première connexion
+            'role' => $request->role_to_assign,
+            'must_change_password' => true,
+            'validated_at' => now(), // Ajout de la date de validation
         ];
 
-        // Si le rôle assigné est 'super_admin', 'admin_sectoriel', ou 'directeur',
-        // la division de l'agent est mise à null.
         if (in_array($request->role_to_assign, ['super_admin', 'admin_sectoriel', 'directeur'])) {
             $updateData['division'] = null;
         }
 
         $agent->update($updateData); // Utilise les données préparées pour la mise à jour
+
+        // Ajout d'une entrée dans ValidationHistorique
+        ValidationHistorique::create([
+            'agent_id' => $agent->id,
+            'user_id' => $user->id,
+            'action' => 'validated', // CORRECTION ICI : Doit être 'validated'
+            'validated_at' => now(),
+            'demande_absence_id' => null, // S'assurer que c'est bien nullable ou gérer la valeur
+            'role' => $request->role_to_assign, // Le rôle qui a été attribué
+        ]);
 
         try {
             Mail::to($agent->email)->send(new AgentValidatedMail($agent, $generatedPassword));
@@ -289,25 +301,16 @@ class AgentController extends Controller
             return redirect()->route('agent.index')->with('warning', 'Agent validé, mais l\'e-mail n\'a pas pu être envoyé.');
         }
 
-        return redirect()->route('agent.index')->with('success', 'Agent validé et mot de passe et rôle assignés.');
+        // Message de succès garanti après validation
+        // Redirige vers la nouvelle route de détails validés
+        return redirect()->route('agent.validatedDetails', $agent->fresh())->with('success', 'Agent validé avec succès et mot de passe et rôle assignés.');
     }
 
-    /**
-     * Affiche le formulaire de changement de mot de passe (si c'est bien la responsabilité de ce contrôleur).
-     * Dans votre setup, cette fonction est dans ForcePasswordChangeController.php
-     * @return \Illuminate\View\View
-     */
     public function showChangePasswordForm()
     { 
         return view('agent.change-password');
     }
 
-    /**
-     * Gère le changement de mot de passe (si c'est bien la responsabilité de ce contrôleur).
-     * Dans votre setup, cette fonction est dans ForcePasswordChangeController.php
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function changePassword(Request $request)
     {
        $request->validate([
@@ -315,8 +318,8 @@ class AgentController extends Controller
     ]);
 
     $user = Auth::user();
-    $user->password = Hash::make($request->password); // Utilisez Hash::make() au lieu de bcrypt()
-    $user->must_change_password = false; // si tu utilises ce champ
+    $user->password = Hash::make($request->password);
+    $user->must_change_password = false;
     $user->save();
 
     Auth::logout(); // Déconnexion de l'utilisateur
@@ -337,9 +340,9 @@ class AgentController extends Controller
     {
         $user = Auth::user();
 
-        // Vérification d'autorisation : seuls les super_admin et admin_sectoriel peuvent assigner un rôle.
+        // Vérification d'autorisation : seuls les super_admin et admin_sectoriel peuvent attribuer un rôle.
         if (!in_array($user->role, ['super_admin', 'admin_sectoriel'])) {
-            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à assigner des rôles.');
+            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à attribuer des rôles.');
         }
         
         $request->validate([
@@ -354,7 +357,7 @@ class AgentController extends Controller
 
         $agent->save();
 
-        return back()->with('success', 'Rôle assigné avec succès.');
+        return back()->with('success', 'Rôle attribué avec succès.');
     }
 
     /**
@@ -368,7 +371,6 @@ class AgentController extends Controller
     {
         $user = Auth::user();
 
-        // Vérification d'autorisation : seuls les super_admin et admin_sectoriel peuvent rejeter un agent.
         if (!in_array($user->role, ['super_admin', 'admin_sectoriel'])) {
             return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à rejeter des agents.');
         }
@@ -408,7 +410,6 @@ class AgentController extends Controller
     {
         $user = Auth::user();
 
-        // Vérification d'autorisation : seuls les super_admin et admin_sectoriel peuvent supprimer un agent.
         if (!in_array($user->role, ['super_admin', 'admin_sectoriel'])) {
             return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à supprimer des agents.');
         }
@@ -460,7 +461,7 @@ class AgentController extends Controller
             ],
             'direction' => [
                 'required',
-                Rule::in(['DAP', 'DCI', 'DSI', 'DPB', 'DCB', 'DORDP', 'DS', 'DP', 'DMTA', 'CSS', 'CER'])
+                Rule::in(['DAP', 'DCI', 'DSI', 'DPB', 'DCB', 'DODP', 'DS', 'DP', 'DMTA', 'CSS', 'CER'])
             ],
             'division' => 'required|string|max:255', 
         ]);
@@ -493,4 +494,13 @@ class AgentController extends Controller
         $path = storage_path('app/' . $demande->pdf_path);
         return response()->download($path);
     }
+
+    /**
+     * Affiche les détails d'un agent validé.
+     * Accessible uniquement si l'agent a le statut 'validated' et selon les droits de l'utilisateur.
+     *
+     * @param  \App\Models\Agent  $agent
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    // Méthode showValidatedAgentDetails supprimée pour éviter la confusion avec validatedDetails
 }
