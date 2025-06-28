@@ -20,11 +20,12 @@ class Agent extends Authenticatable // Le modèle doit étendre Authenticatable 
         'prenom',
         'nom',
         'email',
+        'password',
         'role',
         'direction',
         'division',
-        'password',       // Ajouté pour le mot de passe de l'agent
-        'status',         // Ajouté pour le statut de l'agent (pending, validated, rejected)
+        'status',
+        'must_change_password',
     ];
 
     /**
@@ -47,8 +48,27 @@ class Agent extends Authenticatable // Le modèle doit étendre Authenticatable 
      * @var array<string, string>
      */
     protected $casts = [
-        'password' => 'hashed', // Hachage automatique du mot de passe
         'email_verified_at' => 'datetime', // Si vous utilisez la vérification d'email
+        'password' => 'hashed', // Hachage automatique du mot de passe
+        'validated_at' => 'datetime',
         'must_change_password' =>'boolean',
     ];
+
+    /**
+     * Relation vers l'historique de validation pour cet agent
+     */
+    public function validationHistory()
+    {
+        return $this->hasMany(ValidationHistorique::class, 'agent_id');
+    }
+
+    /**
+     * Relation pour récupérer le dernier validateur de l'agent
+     */
+    public function validatorAgent()
+    {
+        return $this->hasOne(ValidationHistorique::class, 'agent_id')
+                    ->where('action', 'validated')
+                    ->latest('validated_at');
+    }
 }
