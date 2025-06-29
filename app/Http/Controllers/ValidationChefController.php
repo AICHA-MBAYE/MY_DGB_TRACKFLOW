@@ -41,7 +41,7 @@ public function traiter(Request $request, $id) {
     $demande->etat_chef = $request->input('action');
     if ($request->input('action') === 'rejetée') {
         $demande->motif_rejet_chef = $request->input('motif_rejet_chef');
-   $demande->etat_directeur = 'en_attente';
+   $demande->etat_directeur = 'rejetée';
         $demande->motif_rejet_directeur = 'Rejet  suite au refus du chef de service ';
     } else {
         $demande->motif_rejet_chef = null;

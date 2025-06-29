@@ -95,16 +95,14 @@
                                                             style="background:#2ecc71;">
                                                             <i class="fas fa-pen"></i>
                                                         </a>
-                                                        <form action="{{ route('demande_absence.destroy', $demande->id) }}" method="POST" style="display:inline-block;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
+                                                        <a href="{{ route('demande_absence.destroy', $demande->id) }}"
+
                                                                 title="Supprimer"
                                                                 class="btn btn-sm btn-icon"
                                                                 style="background:#e74c3c;" onclick="return confirm('Voulez-vous vraiment supprimer cette demande ?');">
                                                                 <i class="fas fa-trash-alt"></i>
-                                                            </button>
-                                                        </form>
+                                                        </a>
+
                                                     @endif
                                                     <a href="{{ route('demande_absence.show', $demande->id) }}"
                                                         title="Voir détails"

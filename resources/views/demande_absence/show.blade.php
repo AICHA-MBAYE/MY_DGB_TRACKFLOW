@@ -16,10 +16,14 @@
                         <dd class="col-sm-8">{{ $demande->agent->prenom ?? '' }} {{ $demande->agent->nom ?? '' }}</dd>
 
                         <dt class="col-sm-4">Date début</dt>
-                        <dd class="col-sm-8">{{ $demande->date_debut }}</dd>
+                        <dd class="col-sm-8">{{ \Carbon\Carbon::parse($demande->date_debut)->format('d/m/Y') }}</dd> {{-- Formatage de la date --}}
 
                         <dt class="col-sm-4">Date fin</dt>
-                        <dd class="col-sm-8">{{ $demande->date_fin }}</dd>
+                        <dd class="col-sm-8">{{ \Carbon\Carbon::parse($demande->date_fin)->format('d/m/Y') }}</dd> {{-- Formatage de la date --}}
+
+                        {{-- AJOUTEZ CETTE NOUVELLE LIGNE POUR LA DURÉE --}}
+                        <dt class="col-sm-4">Durée </dt>
+                        <dd class="col-sm-8">{{ $demande->duree_jours_ouvrables }} jours</dd>
 
                         <dt class="col-sm-4">Motif</dt>
                         <dd class="col-sm-8">{{ $demande->motif }}</dd>
@@ -54,6 +58,9 @@
                     <a href="{{ $retour }}" class="btn" style="background-color: #002147; color: #fff;">
                         <i class="fas fa-arrow-left"></i> Retour
                     </a>
+
+
+
                 </div>
             </div>
         </div>
