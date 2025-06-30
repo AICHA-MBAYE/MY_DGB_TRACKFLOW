@@ -16,13 +16,12 @@
     @endif
 
     <div class="text-center mt-4">
-        <a href="{{ route('demande_absence.stats') }}" class="btn btn-info" style="background:#003366; color:#fff;">Voir statistiques</a>
+        <a href="{{ route('demande_absence.stats') }}" class="btn btn-info">Voir statistiques</a>
     </div>
 
     @if ($demandes->isEmpty())
         <p class="text-center text-white bg-dark p-3 mt-4 rounded">Vous n'avez encore aucune demande d'absence.</p>
     @else
-        <!-- Nav tabs for sections -->
         <ul class="nav nav-tabs mt-4" id="absenceTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="soumises-tab" data-bs-toggle="tab" data-bs-target="#soumises" type="button" role="tab" aria-controls="soumises" aria-selected="true" style="color: #003366; font-weight: bold;">Demandes non traitées</button>
@@ -32,13 +31,16 @@
             </li>
         </ul>
 
-        <!-- Tab content -->
         <div class="tab-content mt-3 p-3 border rounded" style="border-color: #dee2e6; background-color: #f8f9fa;">
-            {{-- Section : Demandes soumises (brouillon, en attente) --}}
+            {{-- Section : Demandes soumises (brouillon, en attente du chef, en attente du directeur) --}}
             <div class="tab-pane fade show active" id="soumises" role="tabpanel" aria-labelledby="soumises-tab">
                 @php
                     $demandesSoumises = $demandes->filter(function ($demande) {
-                        return $demande->statut === 'brouillon' || ($demande->etat_chef === 'acceptée' && $demande->etat_directeur === 'en_attente');
+                        // Une demande est "non traitée" si :
+                        // 1. Elle est à l'état 'brouillon'
+                        // 2. Ou elle a été soumise et est en attente (que ce soit du chef ou du directeur)
+                        return $demande->statut === 'brouillon' ||
+                               ($demande->etat_chef === 'en_attente' || $demande->etat_directeur === 'en_attente');
                     });
                 @endphp
 
@@ -65,49 +67,49 @@
                                         <td>
                                             @if($demande->statut === 'brouillon')
                                                 <span style="color:#f39c12;font-weight:bold;">Brouillon</span>
-                                            @elseif($demande->etat_chef === 'acceptée' && $demande->etat_directeur === 'en_attente')
-                                                <span style="color:#f39c12;font-weight:bold;">Soumise</span> {{-- Changed color for consistency --}}
+                                            @elseif($demande->etat_chef === 'en_attente' || $demande->etat_directeur === 'en_attente')
+                                                {{-- Si l'un des états est 'en_attente', on affiche "Soumise" --}}
+                                                <span style="color:#f39c12;font-weight:bold;">Soumise</span>
                                             @else
                                                 <span>{{ ucfirst($demande->statut) }}</span>
                                             @endif
                                         </td>
                                         <td>
                                             <div style="display: flex; align-items: center; justify-content: space-between;">
-                                                {{-- Bouton "Soumettre" à gauche (seulement pour les brouillons) --}}
+                                                {{-- Bouton "Soumettre" (seulement pour les brouillons) --}}
                                                 <div>
                                                     @if($demande->statut === 'brouillon')
                                                         <form action="{{ route('demande_absence.submit', $demande->id) }}" method="POST" style="display:inline-block;">
                                                             @csrf
-                                                            <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Soumettre cette demande ?');" style="color: #fff;">Soumettre</button>
+                                                            <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Soumettre cette demande ?');">Soumettre</button>
                                                         </form>
                                                     @endif
                                                 </div>
 
-                                                {{-- Icônes "Modifier", "Supprimer", "Voir détails" à droite (UNIQUEMENT pour les brouillons) --}}
+                                                {{-- Icônes "Modifier", "Supprimer" (UNIQUEMENT pour les brouillons) et "Voir détails" --}}
                                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                                    @if($demande->statut === 'brouillon') {{-- Rétablissement de la condition originale --}}
-                                                       <a href="{{ route('demande_absence.edit', $demande->id) }}"
+                                                    @if($demande->statut === 'brouillon')
+                                                        <a href="{{ route('demande_absence.edit', $demande->id) }}"
                                                             title="Modifier"
                                                             class="btn btn-sm btn-icon"
                                                             style="background:#2ecc71;">
                                                             <i class="fas fa-pen"></i>
-                                                            </a>
-                                                        {{-- Formulaire de suppression stylisé comme une icône --}}
-                                                        <a href="{{ route('demande_absence.destroy', $demande->id) }}" method="POST"
-                                                            title="Supprimer"
-                                                            class="btn btn-sm btn-icon"
-                                                            style="background:#e74c3c;" onclick="return confirm('Voulez-vous vraiment supprimer cette demande ?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <i class="fas fa-trash-alt"></i>
                                                         </a>
+                                                        <a href="{{ route('demande_absence.destroy', $demande->id) }}"
+
+                                                                title="Supprimer"
+                                                                class="btn btn-sm btn-icon"
+                                                                style="background:#e74c3c;" onclick="return confirm('Voulez-vous vraiment supprimer cette demande ?');">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                        </a>
+
                                                     @endif
-                                                   <a href="{{ route('demande_absence.show', $demande->id) }}"
+                                                    <a href="{{ route('demande_absence.show', $demande->id) }}"
                                                         title="Voir détails"
                                                         class="btn btn-sm btn-icon"
                                                         style="background:#00509e;">
                                                         <i class="fas fa-circle-info"></i>
-                                                        </a>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </td>
@@ -123,6 +125,8 @@
             <div class="tab-pane fade" id="traitées" role="tabpanel" aria-labelledby="traitées-tab">
                 @php
                     $demandesTraitées = $demandes->filter(function ($demande) {
+                        // Une demande est "traitée" si elle est rejetée par le chef OU le directeur,
+                        // OU si elle est acceptée par les deux (chef ET directeur).
                         return ($demande->etat_chef === 'rejetée' || $demande->etat_directeur === 'rejetée') ||
                                ($demande->etat_chef === 'acceptée' && $demande->etat_directeur === 'acceptée');
                     });
@@ -168,7 +172,7 @@
                                                     title="Voir détails"
                                                     class="btn btn-sm btn-icon"
                                                     style="background:#00509e;">
-                                                   <i class="fas fa-circle-info"></i>
+                                                    <i class="fas fa-circle-info"></i>
                                                 </a>
                                             </div>
                                         </td>
@@ -183,7 +187,7 @@
     @endif
 
     <div class="text-center mt-4">
-        <a href="{{ route('demande_absence.create') }}" class="btn btn-secondary" style="color: #fff;">Faire une nouvelle demande</a>
+        <a href="{{ route('demande_absence.create') }}" class="btn btn-secondary">Faire une nouvelle demande</a>
     </div>
 
 @endsection
@@ -283,29 +287,29 @@
     .tab-content {
         border-top: none; /* Supprimer la bordure supérieure pour s'aligner avec les onglets */
     }
-.btn-icon i {
-    font-size: 1.2em;
-    line-height: 1;
-    margin: 0;
-    padding: 0;
-}
+    .btn-icon i {
+        font-size: 1.2em;
+        line-height: 1;
+        margin: 0;
+        padding: 0;
+    }
     /* Nouveau style pour les boutons d'icônes circulaires */
-   .btn-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    color: #fff;
-    font-size: 1.2em; /* plus petit que 2em sinon ça déborde */
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-    background-color: #333; /* tu peux personnaliser si besoin */
-}
+    .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        color: #fff;
+        font-size: 1.2em; /* plus petit que 2em sinon ça déborde */
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        background-color: #333; /* tu peux personnaliser si besoin */
+    }
     .btn-icon:hover {
         transform: scale(1.1); /* Zoom légèrement plus grand au survol */
     }

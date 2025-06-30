@@ -10,7 +10,7 @@
                 <tr>
                     <th style="padding:10px;">Agent</th>
                     <th style="padding:10px;">Date/Heure de traitement</th>
-                    <th style="padding:10px;">Action</th>
+                    <th style="padding:10px;">Statut</th>
 
                 </tr>
             </thead>
