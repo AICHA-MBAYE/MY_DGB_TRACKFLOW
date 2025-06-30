@@ -51,7 +51,7 @@ public function historiqueValidations(Request $request)
 {
     $historique = ValidationHistorique::where('role', 'directeur')
         ->orderBy('validated_at', 'desc')
-        ->with(['demande', 'user'])
+        ->with(['demande', 'agent'])
         ->get();
 
     return view('directeur.historique', compact('historique'));

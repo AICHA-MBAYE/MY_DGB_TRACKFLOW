@@ -69,7 +69,7 @@ class ChefServiceController extends Controller
 {
     $historique = ValidationHistorique::where('role', 'chef_service')
         ->orderBy('validated_at', 'desc')
-        ->with(['demande', 'user'])
+        ->with(['demande', 'agent'])
         ->get();
 
     return view('chef.historique', compact('historique'));
